@@ -185,7 +185,7 @@
                     <!-- Sección 2: Modo Focus y Mis Tareas Pendientes lado a lado -->
                     <HBox spacing="20" prefHeight="400">
                         <!-- Modo Focus -->
-                        <VBox spacing="10" style="-fx-background-color: #28a745; -fx-padding: 20; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                        <VBox spacing="10" style="-fx-background-color: #5cb85c; -fx-padding: 20; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
                             <Label text="Modo Focus - Próxima Tarea Sugerida" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"/>
 
                             <Label fx:id="lblTareaFoco" text="Sin tarea seleccionada" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>

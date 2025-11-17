@@ -482,33 +482,9 @@ public class MainController implements Initializable {
         }
 
         // Configurar columnas de tableMisTareas
-        System.out.println("=== DEBUG tableMisTareas ===");
-        System.out.println("tableMisTareas is null? " + (tableMisTareas == null));
-        System.out.println("colTituloMisTareas is null? " + (colTituloMisTareas == null));
-        System.out.println("colPrioridadMisTareas is null? " + (colPrioridadMisTareas == null));
-        System.out.println("colFechaLimiteMisTareas is null? " + (colFechaLimiteMisTareas == null));
-        System.out.println("colAccionMisTareas is null? " + (colAccionMisTareas == null));
-
-        // Set fixed row height
-        tableMisTareas.setFixedCellSize(40);
-
         colTituloMisTareas.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colPrioridadMisTareas.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
         colFechaLimiteMisTareas.setCellValueFactory(new PropertyValueFactory<>("fechaLimite"));
-
-        // Test con cell factory personalizada para título
-        colTituloMisTareas.setCellFactory(column -> new TableCell<Tarea, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item);
-                    System.out.println("Rendering cell: " + item);
-                }
-            }
-        });
 
         // Fábrica de celdas personalizada para colAccionMisTareas (botón)
         colAccionMisTareas.setCellFactory(column -> new TableCell<Tarea, Void>() {
@@ -539,23 +515,12 @@ public class MainController implements Initializable {
         });
 
         // Cargar las primeras 5 tareas
-        System.out.println("Total tareas disponibles: " + allTareas.size());
-        if (!allTareas.isEmpty()) {
-            System.out.println("Primera tarea: " + allTareas.get(0).getTitulo());
-        }
-
-        final ObservableList<Tarea> limitedTareas = FXCollections.observableArrayList(
+        ObservableList<Tarea> tareasLimitadas = FXCollections.observableArrayList(
             allTareas.subList(0, Math.min(5, allTareas.size()))
         );
-        System.out.println("Tareas limitadas: " + limitedTareas.size());
 
-        // Usar Platform.runLater para asegurar que la UI esté lista
-        Platform.runLater(() -> {
-            System.out.println("Platform.runLater: Cargando datos en tabla");
-            tableMisTareas.setItems(limitedTareas);
-            System.out.println("Platform.runLater: Items en tabla: " + tableMisTareas.getItems().size());
-            tableMisTareas.refresh();
-        });
+        // Usar Platform.runLater para que la tabla renderice correctamente en la pestaña
+        Platform.runLater(() -> tableMisTareas.setItems(tareasLimitadas));
 
         // Configurar gráfico de progreso semanal
         configurarGraficoSemanal();
