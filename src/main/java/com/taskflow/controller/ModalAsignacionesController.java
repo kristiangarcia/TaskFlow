@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import com.taskflow.model.*;
 import com.taskflow.util.DataManager;
@@ -126,11 +127,22 @@ public class ModalAsignacionesController implements Initializable {
             }
         });
 
-        // Configurar columna Acciones con botón Eliminar
+        // Configurar columna Acciones con botones Editar y Eliminar
         colAcciones.setCellFactory(column -> new TableCell<Asignacion, Void>() {
+            private final Button btnEditar = new Button("Editar");
             private final Button btnEliminar = new Button("Eliminar");
+            private final HBox pane = new HBox(5, btnEditar, btnEliminar);
 
             {
+                btnEditar.setOnAction(event -> {
+                    // Funcionalidad en desarrollo
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Editar Asignación");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Funcionalidad para editar asignación aún no está programada");
+                    alert.showAndWait();
+                });
+
                 btnEliminar.setOnAction(event -> {
                     // Funcionalidad en desarrollo
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -147,7 +159,7 @@ public class ModalAsignacionesController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(btnEliminar);
+                    setGraphic(pane);
                 }
             }
         });
