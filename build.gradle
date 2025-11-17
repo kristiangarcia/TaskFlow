@@ -1,0 +1,45 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'com.taskflow'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // PostgreSQL JDBC Driver para Supabase
+    implementation 'org.postgresql:postgresql:42.7.3'
+}
+
+javafx {
+    version = "25"
+    modules = [
+        'javafx.base',
+        'javafx.graphics',
+        'javafx.controls',
+        'javafx.fxml'
+    ]
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
+
+application {
+    mainClass = 'com.taskflow.Main'
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/resources"]
+            includes = ["**/*.fxml", "**/*.png", "**/*.jpg", "**/*.properties"]
+        }
+    }
+}

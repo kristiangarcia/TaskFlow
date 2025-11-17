@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.taskflow.controller.ModalNuevaTareaController">
+
+    <!-- Título -->
+    <Label text="Nueva Tarea" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- Cuadrícula de formulario -->
+    <GridPane hgap="10" vgap="10">
+        <!-- Fila 0: Título -->
+        <Label text="Título *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtTitulo" promptText="Título de la tarea" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <!-- Fila 1: Descripción -->
+        <Label text="Descripción *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextArea fx:id="txtDescripcion" promptText="Descripción detallada" prefRowCount="4" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <!-- Fila 2: Categoría -->
+        <Label text="Categoría" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="txtCategoria" promptText="ej: Desarrollo Web, Marketing" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <!-- Fila 3: Prioridad -->
+        <Label text="Prioridad *" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <ComboBox fx:id="comboPrioridad" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <!-- Fila 4: Estado -->
+        <Label text="Estado *" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <ComboBox fx:id="comboEstado" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+        <!-- Fila 5: Fecha límite -->
+        <Label text="Fecha límite *" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <DatePicker fx:id="dateFechaLimite" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+
+        <!-- Fila 6: Tiempo estimado -->
+        <Label text="Tiempo estimado (min)" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <TextField fx:id="txtTiempoEstimado" promptText="120" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+    </GridPane>
+
+    <!-- Cuadro de información -->
+    <HBox spacing="10" style="-fx-background-color: #d1ecf1; -fx-padding: 10;">
+        <Label text="ℹ" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+        <Label text="La IA analizará esta tarea para predecir posibles retrasos basándose en datos históricos" style="-fx-font-size: 11px;" wrapText="true" />
+    </HBox>
+
+    <!-- Casilla de verificación -->
+    <CheckBox fx:id="checkAsignarAhora" text="Asignar usuarios ahora" />
+
+    <!-- Barra de botones -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCancelar" text="Cancelar" onAction="#handleCancelar" />
+        <Button fx:id="btnGuardar" text="Guardar" onAction="#handleGuardar" />
+    </HBox>
+
+</VBox>

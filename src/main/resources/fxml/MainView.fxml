@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.taskflow.controller.MainController">
+
+    <!-- Superior: Encabezado + Barra de herramientas -->
+    <top>
+        <VBox>
+            <!-- Barra de encabezado oscura -->
+            <VBox style="-fx-background-color: #2C3E50; -fx-padding: 15;">
+                <Label text="TaskFlow" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+            </VBox>
+
+            <!-- Barra de herramientas clara -->
+            <HBox spacing="10" style="-fx-background-color: #ECF0F1; -fx-padding: 10;">
+                <Button fx:id="btnNuevoUsuario" text="+ Usuario" onAction="#handleNuevoUsuario"/>
+                <Button fx:id="btnNuevaTarea" text="+ Tarea" onAction="#handleNuevaTarea"/>
+                <Button fx:id="btnAsignaciones" text="Asignaciones" onAction="#handleAsignaciones"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Centro: Panel de pestañas con 4 pestañas -->
+    <center>
+        <TabPane fx:id="tabPane">
+
+            <!-- Pestaña 1: Panel de control Administrador -->
+            <Tab text="Dashboard Admin" closable="false">
+                <VBox spacing="20" style="-fx-padding: 20;">
+
+                    <!-- Sección 1: Cuadrícula de métricas -->
+                    <GridPane hgap="20" vgap="15">
+                        <!-- Total Tareas -->
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblTotalTareas" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Total Tareas" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- Tareas Pendientes -->
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblTareasPendientes" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Tareas Pendientes" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- Tareas En Progreso -->
+                        <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblTareasEnProgreso" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Tareas En Progreso" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- Total Usuarios -->
+                        <VBox GridPane.columnIndex="3" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblTotalUsuarios" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Total Usuarios" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <!-- Sección 2: Marcador de posición para gráfico -->
+                    <Label text="Gráfico de barras - Tareas por estado"
+                           style="-fx-background-color: #E0E0E0; -fx-alignment: center; -fx-pref-height: 200; -fx-max-width: Infinity;"/>
+
+                    <!-- Sección 3: Tabla de fechas límite -->
+                    <VBox spacing="10">
+                        <Label text="Próximas fechas límite" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <TableView fx:id="tableDeadlines">
+                            <columns>
+                                <TableColumn fx:id="colTituloDeadlines" text="Título" prefWidth="200"/>
+                                <TableColumn fx:id="colCategoriaDeadlines" text="Categoría" prefWidth="150"/>
+                                <TableColumn fx:id="colFechaLimiteDeadlines" text="Fecha Límite" prefWidth="120"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                </VBox>
+            </Tab>
+
+            <!-- Pestaña 2: Gestión de Usuarios -->
+            <Tab text="Gestión Usuarios" closable="false">
+                <VBox spacing="15" style="-fx-padding: 20;">
+
+                    <!-- Barra de herramientas HBox -->
+                    <HBox spacing="10" style="-fx-alignment: center-left;">
+                        <Button fx:id="btnNuevoUsuarioTab" text="Nuevo Usuario"/>
+                        <ComboBox fx:id="comboFiltroRol" promptText="Filtrar por rol" prefWidth="150"/>
+                        <CheckBox fx:id="checkSoloActivos" text="Solo activos"/>
+                    </HBox>
+
+                    <!-- Vista de tabla -->
+                    <TableView fx:id="tableUsuarios" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colIdUsuarios" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="colNombreUsuarios" text="Nombre" prefWidth="150"/>
+                            <TableColumn fx:id="colEmailUsuarios" text="Email" prefWidth="200"/>
+                            <TableColumn fx:id="colTelefonoUsuarios" text="Teléfono" prefWidth="120"/>
+                            <TableColumn fx:id="colRolUsuarios" text="Rol" prefWidth="100"/>
+                            <TableColumn fx:id="colActivoUsuarios" text="Activo" prefWidth="80"/>
+                            <TableColumn fx:id="colAccionesUsuarios" text="Acciones" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+
+                    <!-- Etiqueta de paginación -->
+                    <Label fx:id="lblPaginacion" text="Página 1 de 1" style="-fx-font-size: 12px;"/>
+
+                </VBox>
+            </Tab>
+
+            <!-- Pestaña 3: Gestión de Tareas -->
+            <Tab text="Gestión Tareas" closable="false">
+                <VBox spacing="15" style="-fx-padding: 20;">
+
+                    <!-- Barra de herramientas HBox -->
+                    <HBox spacing="10" style="-fx-alignment: center-left;">
+                        <Button fx:id="btnNuevaTareaTab" text="Nueva Tarea"/>
+                        <ComboBox fx:id="comboEstado" promptText="Estado" prefWidth="150"/>
+                        <ComboBox fx:id="comboPrioridad" promptText="Prioridad" prefWidth="150"/>
+                        <ComboBox fx:id="comboCategoria" promptText="Categoría" prefWidth="150"/>
+                    </HBox>
+
+                    <!-- Vista de tabla -->
+                    <TableView fx:id="tableTareas" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colIdTareas" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="colTituloTareas" text="Título" prefWidth="200"/>
+                            <TableColumn fx:id="colCategoriaTareas" text="Categoría" prefWidth="150"/>
+                            <TableColumn fx:id="colPrioridadTareas" text="Prioridad" prefWidth="100"/>
+                            <TableColumn fx:id="colEstadoTareas" text="Estado" prefWidth="120"/>
+                            <TableColumn fx:id="colAsignadosTareas" text="Asignados" prefWidth="100"/>
+                            <TableColumn fx:id="colAccionesTareas" text="Acciones" prefWidth="120"/>
+                        </columns>
+                    </TableView>
+
+                </VBox>
+            </Tab>
+
+            <!-- Pestaña 4: Panel de control Empleado -->
+            <Tab text="Dashboard Empleado" closable="false">
+                <VBox spacing="20" style="-fx-padding: 20;">
+
+                    <!-- Sección 1: Cuadrícula de métricas personales -->
+                    <GridPane hgap="20" vgap="15">
+                        <!-- Mis Tareas -->
+                        <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblMisTareas" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Mis Tareas" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- En Progreso -->
+                        <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblEnProgreso" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="En Progreso" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- Completadas Hoy -->
+                        <VBox GridPane.columnIndex="2" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblCompletadasHoy" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Completadas Hoy" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <!-- Tiempo Total -->
+                        <VBox GridPane.columnIndex="3" GridPane.rowIndex="0" spacing="5" style="-fx-alignment: center;">
+                            <Label fx:id="lblTiempoTotal" text="0h" style="-fx-font-size: 32px; -fx-font-weight: bold;"/>
+                            <Label text="Tiempo Total" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                    </GridPane>
+
+                    <!-- Sección 2: Tarjeta de Modo Foco -->
+                    <VBox spacing="10" style="-fx-background-color: #d4edda; -fx-padding: 20; -fx-spacing: 10; -fx-background-radius: 5;">
+                        <Label text="MODO FOCO" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblTareaFoco" text="Sin tarea seleccionada" style="-fx-font-size: 14px;"/>
+                        <Label fx:id="lblPrediccionIA" text="IA: Tiempo estimado - min" style="-fx-font-size: 11px; -fx-font-style: italic; -fx-text-fill: #6c757d;"/>
+                        <Button fx:id="btnIniciarFoco" text="Iniciar tarea"/>
+                    </VBox>
+
+                    <!-- Sección 3: Tareas pendientes -->
+                    <VBox spacing="10" VBox.vgrow="ALWAYS">
+                        <Label text="Mis tareas pendientes" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                        <TableView fx:id="tableMisTareas" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colTituloMisTareas" text="Título" prefWidth="200"/>
+                                <TableColumn fx:id="colPrioridadMisTareas" text="Prioridad" prefWidth="100"/>
+                                <TableColumn fx:id="colFechaLimiteMisTareas" text="Fecha Límite" prefWidth="120"/>
+                                <TableColumn fx:id="colAccionMisTareas" text="Acción" prefWidth="100"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Sección 4: Marcador de posición para progreso semanal -->
+                    <Label text="Progreso semanal (Lun-Dom)"
+                           style="-fx-background-color: #E0E0E0; -fx-alignment: center; -fx-pref-height: 150; -fx-max-width: Infinity;"/>
+
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.taskflow.controller.ModalAsignacionesController">
+
+    <!-- Título -->
+    <Label text="Asignaciones de Tarea" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- Encabezado de información de tarea -->
+    <VBox spacing="5" style="-fx-background-color: #f8f9fa; -fx-padding: 15;">
+        <Label fx:id="lblTareaTitulo" text="Tarea: Diseñar interfaz de usuario" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <Label fx:id="lblTareaInfo" text="Categoría: Desarrollo Web | Tiempo estimado: 120 min" style="-fx-font-size: 11px; -fx-text-fill: #6c757d;" />
+    </VBox>
+
+    <!-- Título de sección -->
+    <Label text="Añadir asignación" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+
+    <!-- Cuadrícula de formulario -->
+    <GridPane hgap="10" vgap="10">
+        <!-- Fila 0: Usuario -->
+        <Label text="Usuario *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ComboBox fx:id="comboUsuario" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <!-- Fila 1: Rol en tarea -->
+        <Label text="Rol en tarea" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="txtRol" promptText="ej: Diseñador UI, Desarrollador" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <!-- Fila 2: Horas asignadas -->
+        <Label text="Horas asignadas" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="txtHoras" promptText="2.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    </GridPane>
+
+    <!-- Botón para añadir -->
+    <Button fx:id="btnAnadirAsignacion" text="Añadir asignación" onAction="#handleAnadirAsignacion" />
+
+    <!-- Separador -->
+    <Separator />
+
+    <!-- Título de sección -->
+    <Label text="Asignaciones actuales" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+
+    <!-- Vista de tabla -->
+    <TableView fx:id="tableAsignaciones">
+        <columns>
+            <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="150" />
+            <TableColumn fx:id="colRol" text="Rol" prefWidth="150" />
+            <TableColumn fx:id="colHoras" text="Horas" prefWidth="80" />
+            <TableColumn fx:id="colCompletado" text="Completado" prefWidth="100" />
+            <TableColumn fx:id="colAcciones" text="Acciones" prefWidth="100" />
+        </columns>
+    </TableView>
+
+    <!-- Cuadro de resumen -->
+    <HBox spacing="20" style="-fx-background-color: #e9ecef; -fx-padding: 10;">
+        <Label fx:id="lblTotalUsuarios" text="Total usuarios: 2" />
+        <Label fx:id="lblHorasAsignadas" text="Horas asignadas: 3.5h" />
+        <Label fx:id="lblTiempoEstimado" text="Tiempo estimado: 2.0h" />
+    </HBox>
+
+    <!-- Barra de botones -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCerrar" text="Cerrar" onAction="#handleCerrar" />
+    </HBox>
+
+</VBox>
