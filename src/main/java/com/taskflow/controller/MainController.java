@@ -5,9 +5,13 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
 import com.taskflow.model.*;
 import com.taskflow.util.DataManager;
 import com.taskflow.view.ViewManager;
@@ -33,16 +37,16 @@ public class MainController implements Initializable {
     // Pestaña 1: Panel de administrador
     // ===========================
     @FXML
-    private Label lblTotalTareas;
+    private Label lblUsuariosActivos;
 
     @FXML
-    private Label lblTareasPendientes;
+    private Label lblTareasActivas;
 
     @FXML
-    private Label lblTareasEnProgreso;
+    private Label lblTareasCompletadas;
 
     @FXML
-    private Label lblTotalUsuarios;
+    private BarChart<String, Number> chartTareasPorEstado;
 
     @FXML
     private TableView<Tarea> tableDeadlines;
@@ -51,10 +55,13 @@ public class MainController implements Initializable {
     private TableColumn<Tarea, String> colTituloDeadlines;
 
     @FXML
-    private TableColumn<Tarea, String> colCategoriaDeadlines;
+    private TableColumn<Tarea, String> colFechaLimiteDeadlines;
 
     @FXML
-    private TableColumn<Tarea, String> colFechaLimiteDeadlines;
+    private TableColumn<Tarea, Prioridad> colPrioridadDeadlines;
+
+    @FXML
+    private TableColumn<Tarea, EstadoTarea> colEstadoDeadlines;
 
     // ===========================
     // Pestaña 2: Gestión de usuarios
@@ -138,6 +145,9 @@ public class MainController implements Initializable {
     // Pestaña 4: Panel de empleado
     // ===========================
     @FXML
+    private Label lblSaludo;
+
+    @FXML
     private Label lblMisTareas;
 
     @FXML
@@ -153,10 +163,25 @@ public class MainController implements Initializable {
     private Label lblTareaFoco;
 
     @FXML
+    private Label lblCategoriaFoco;
+
+    @FXML
+    private Label lblPrioridadFoco;
+
+    @FXML
+    private Label lblTiempoEstimadoFoco;
+
+    @FXML
+    private Label lblFechaLimiteFoco;
+
+    @FXML
     private Label lblPrediccionIA;
 
     @FXML
     private Button btnIniciarFoco;
+
+    @FXML
+    private BarChart<String, Number> chartProgresoSemanal;
 
     @FXML
     private TableView<Tarea> tableMisTareas;
@@ -168,7 +193,7 @@ public class MainController implements Initializable {
     private TableColumn<Tarea, Prioridad> colPrioridadMisTareas;
 
     @FXML
-    private TableColumn<Tarea, String> colFechaLimiteMisTareas;
+    private TableColumn<Tarea, LocalDate> colFechaLimiteMisTareas;
 
     @FXML
     private TableColumn<Tarea, Void> colAccionMisTareas;
@@ -198,19 +223,57 @@ public class MainController implements Initializable {
         ObservableList<Tarea> tareas = dataManager.getTareas();
         ObservableList<Usuario> usuarios = dataManager.getUsuarios();
 
-        // Establecer etiquetas de métricas con contadores
-        lblTotalTareas.setText(String.valueOf(tareas.size()));
-        lblTareasPendientes.setText(String.valueOf(dataManager.countTareasByEstado(EstadoTarea.abierta)));
-        lblTareasEnProgreso.setText(String.valueOf(dataManager.countTareasByEstado(EstadoTarea.en_progreso)));
-        lblTotalUsuarios.setText(String.valueOf(usuarios.size()));
+        // Contar usuarios activos
+        long usuariosActivos = usuarios.stream().filter(Usuario::isActivo).count();
 
-        // Configurar columnas de tableDeadlines con PropertyValueFactory
+        // Contar tareas activas (abiertas + en progreso)
+        long tareasActivas = dataManager.countTareasByEstado(EstadoTarea.abierta) +
+                            dataManager.countTareasByEstado(EstadoTarea.en_progreso);
+
+        // Contar tareas completadas
+        long tareasCompletadas = dataManager.countTareasByEstado(EstadoTarea.completada);
+
+        // Establecer etiquetas de métricas
+        lblUsuariosActivos.setText(String.valueOf(usuariosActivos));
+        lblTareasActivas.setText(String.valueOf(tareasActivas));
+        lblTareasCompletadas.setText(String.valueOf(tareasCompletadas));
+
+        // Configurar gráfico de barras
+        configurarGraficoBarras();
+
+        // Configurar columnas de tableDeadlines
         colTituloDeadlines.setCellValueFactory(new PropertyValueFactory<>("titulo"));
-        colCategoriaDeadlines.setCellValueFactory(new PropertyValueFactory<>("proyectoCategoria"));
         colFechaLimiteDeadlines.setCellValueFactory(new PropertyValueFactory<>("fechaLimite"));
+        colPrioridadDeadlines.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
+        colEstadoDeadlines.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        // Cargar todas las tareas
-        tableDeadlines.setItems(tareas);
+        // Cargar tareas ordenadas por fecha límite (próximas primero)
+        ObservableList<Tarea> tareasProximas = tareas.stream()
+            .filter(t -> t.getFechaLimite() != null)
+            .sorted((t1, t2) -> t1.getFechaLimite().compareTo(t2.getFechaLimite()))
+            .limit(10)
+            .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        tableDeadlines.setItems(tareasProximas);
+    }
+
+    private void configurarGraficoBarras() {
+        // Crear serie de datos
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+        // Obtener contadores de tareas por estado
+        long enProgreso = dataManager.countTareasByEstado(EstadoTarea.en_progreso);
+        long abiertas = dataManager.countTareasByEstado(EstadoTarea.abierta);
+        long completadas = dataManager.countTareasByEstado(EstadoTarea.completada);
+        long retrasadas = dataManager.countTareasByEstado(EstadoTarea.retrasada);
+
+        // Añadir datos al gráfico
+        series.getData().add(new XYChart.Data<>("En Progreso", enProgreso));
+        series.getData().add(new XYChart.Data<>("Abiertas", abiertas));
+        series.getData().add(new XYChart.Data<>("Completadas", completadas));
+        series.getData().add(new XYChart.Data<>("Retrasadas", retrasadas));
+
+        // Añadir serie al gráfico
+        chartTareasPorEstado.getData().add(series);
     }
 
     // ===========================
@@ -398,20 +461,54 @@ public class MainController implements Initializable {
     // Pestaña 4: Inicialización del panel de empleado
     // ===========================
     private void initializeDashboardEmpleado() {
+        // Saludo personalizado (hardcoded por ahora)
+        lblSaludo.setText("Hola, Usuario");
+
         // Establecer métricas personales codificadas
         lblMisTareas.setText("8");
         lblEnProgreso.setText("3");
         lblCompletadasHoy.setText("2");
         lblTiempoTotal.setText("4.5h");
 
-        // Establecer etiquetas del modo enfoque
-        lblTareaFoco.setText("Ninguna tarea seleccionada");
-        lblPrediccionIA.setText("Tiempo estimado: --");
+        // Configurar Modo Focus con la primera tarea
+        ObservableList<Tarea> allTareas = dataManager.getTareas();
+        if (!allTareas.isEmpty()) {
+            Tarea tareaFoco = allTareas.get(0);
+            lblTareaFoco.setText(tareaFoco.getTitulo());
+            lblCategoriaFoco.setText(tareaFoco.getProyectoCategoria() != null ? tareaFoco.getProyectoCategoria() : "--");
+            lblPrioridadFoco.setText(tareaFoco.getPrioridad() != null ? tareaFoco.getPrioridad().toString() : "--");
+            lblTiempoEstimadoFoco.setText(tareaFoco.getTiempoEstimadoMins() > 0 ? tareaFoco.getTiempoEstimadoMins() + " mins" : "--");
+            lblFechaLimiteFoco.setText(tareaFoco.getFechaLimite() != null ? tareaFoco.getFechaLimite().toString() : "--");
+        }
 
         // Configurar columnas de tableMisTareas
+        System.out.println("=== DEBUG tableMisTareas ===");
+        System.out.println("tableMisTareas is null? " + (tableMisTareas == null));
+        System.out.println("colTituloMisTareas is null? " + (colTituloMisTareas == null));
+        System.out.println("colPrioridadMisTareas is null? " + (colPrioridadMisTareas == null));
+        System.out.println("colFechaLimiteMisTareas is null? " + (colFechaLimiteMisTareas == null));
+        System.out.println("colAccionMisTareas is null? " + (colAccionMisTareas == null));
+
+        // Set fixed row height
+        tableMisTareas.setFixedCellSize(40);
+
         colTituloMisTareas.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colPrioridadMisTareas.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
         colFechaLimiteMisTareas.setCellValueFactory(new PropertyValueFactory<>("fechaLimite"));
+
+        // Test con cell factory personalizada para título
+        colTituloMisTareas.setCellFactory(column -> new TableCell<Tarea, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                    System.out.println("Rendering cell: " + item);
+                }
+            }
+        });
 
         // Fábrica de celdas personalizada para colAccionMisTareas (botón)
         colAccionMisTareas.setCellFactory(column -> new TableCell<Tarea, Void>() {
@@ -420,9 +517,12 @@ public class MainController implements Initializable {
             {
                 btnIniciar.setOnAction(event -> {
                     Tarea tarea = getTableView().getItems().get(getIndex());
-                    // Actualizar etiquetas del modo enfoque
+                    // Actualizar sección de Modo Focus
                     lblTareaFoco.setText(tarea.getTitulo());
-                    lblPrediccionIA.setText("Tiempo estimado: 2.5h");
+                    lblCategoriaFoco.setText(tarea.getProyectoCategoria() != null ? tarea.getProyectoCategoria() : "--");
+                    lblPrioridadFoco.setText(tarea.getPrioridad() != null ? tarea.getPrioridad().toString() : "--");
+                    lblTiempoEstimadoFoco.setText(tarea.getTiempoEstimadoMins() > 0 ? tarea.getTiempoEstimadoMins() + " mins" : "--");
+                    lblFechaLimiteFoco.setText(tarea.getFechaLimite() != null ? tarea.getFechaLimite().toString() : "--");
                     System.out.println("Iniciando tarea: " + tarea.getTitulo());
                 });
             }
@@ -438,17 +538,49 @@ public class MainController implements Initializable {
             }
         });
 
-        // Cargar las primeras 3 tareas
-        ObservableList<Tarea> allTareas = dataManager.getTareas();
-        ObservableList<Tarea> limitedTareas = FXCollections.observableArrayList(
-            allTareas.subList(0, Math.min(3, allTareas.size()))
+        // Cargar las primeras 5 tareas
+        System.out.println("Total tareas disponibles: " + allTareas.size());
+        if (!allTareas.isEmpty()) {
+            System.out.println("Primera tarea: " + allTareas.get(0).getTitulo());
+        }
+
+        final ObservableList<Tarea> limitedTareas = FXCollections.observableArrayList(
+            allTareas.subList(0, Math.min(5, allTareas.size()))
         );
-        tableMisTareas.setItems(limitedTareas);
+        System.out.println("Tareas limitadas: " + limitedTareas.size());
+
+        // Usar Platform.runLater para asegurar que la UI esté lista
+        Platform.runLater(() -> {
+            System.out.println("Platform.runLater: Cargando datos en tabla");
+            tableMisTareas.setItems(limitedTareas);
+            System.out.println("Platform.runLater: Items en tabla: " + tableMisTareas.getItems().size());
+            tableMisTareas.refresh();
+        });
+
+        // Configurar gráfico de progreso semanal
+        configurarGraficoSemanal();
 
         // Añadir manejador de evento para btnIniciarFoco
         btnIniciarFoco.setOnAction(event -> {
             System.out.println("Iniciando modo foco");
         });
+    }
+
+    private void configurarGraficoSemanal() {
+        // Crear serie de datos para el progreso semanal
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+
+        // Datos de ejemplo para cada día de la semana
+        series.getData().add(new XYChart.Data<>("Lun", 4));
+        series.getData().add(new XYChart.Data<>("Mar", 5));
+        series.getData().add(new XYChart.Data<>("Mié", 3));
+        series.getData().add(new XYChart.Data<>("Jue", 6));
+        series.getData().add(new XYChart.Data<>("Vie", 2));
+        series.getData().add(new XYChart.Data<>("Sáb", 0));
+        series.getData().add(new XYChart.Data<>("Dom", 0));
+
+        // Añadir serie al gráfico
+        chartProgresoSemanal.getData().add(series);
     }
 
     // ===========================
