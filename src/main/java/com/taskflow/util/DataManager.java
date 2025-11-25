@@ -82,10 +82,10 @@ public class DataManager {
                 usuarios.add(usuario);
             }
 
-            System.out.println("✅ Cargados " + usuarios.size() + " usuarios desde Supabase");
+            System.out.println("Cargados " + usuarios.size() + " usuarios desde Supabase");
 
         } catch (SQLException e) {
-            System.err.println("❌ Error cargando usuarios: " + e.getMessage());
+            System.err.println("Error cargando usuarios: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -123,10 +123,10 @@ public class DataManager {
                 tareas.add(tarea);
             }
 
-            System.out.println("✅ Cargadas " + tareas.size() + " tareas desde Supabase");
+            System.out.println("Cargadas " + tareas.size() + " tareas desde Supabase");
 
         } catch (SQLException e) {
-            System.err.println("❌ Error cargando tareas: " + e.getMessage());
+            System.err.println("Error cargando tareas: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -159,10 +159,10 @@ public class DataManager {
                 asignaciones.add(asignacion);
             }
 
-            System.out.println("✅ Cargadas " + asignaciones.size() + " asignaciones desde Supabase");
+            System.out.println("Cargadas " + asignaciones.size() + " asignaciones desde Supabase");
 
         } catch (SQLException e) {
-            System.err.println("❌ Error cargando asignaciones: " + e.getMessage());
+            System.err.println("Error cargando asignaciones: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -188,11 +188,11 @@ public class DataManager {
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas > 0) {
                 cargarUsuarios(); // Recargar lista
-                System.out.println("✅ Usuario insertado correctamente");
+                System.out.println("Usuario insertado correctamente");
                 return true;
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error insertando usuario: " + e.getMessage());
+            System.err.println("Error insertando usuario: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -218,11 +218,11 @@ public class DataManager {
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas > 0) {
                 cargarTareas(); // Recargar lista
-                System.out.println("✅ Tarea insertada correctamente");
+                System.out.println("Tarea insertada correctamente");
                 return true;
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error insertando tarea: " + e.getMessage());
+            System.err.println("Error insertando tarea: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -246,11 +246,172 @@ public class DataManager {
             int filasAfectadas = pstmt.executeUpdate();
             if (filasAfectadas > 0) {
                 cargarAsignaciones(); // Recargar lista
-                System.out.println("✅ Asignación insertada correctamente");
+                System.out.println("Asignacion insertada correctamente");
                 return true;
             }
         } catch (SQLException e) {
-            System.err.println("❌ Error insertando asignación: " + e.getMessage());
+            System.err.println("Error insertando asignacion: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // ==================== MÉTODOS DE ACTUALIZACIÓN ====================
+
+    /**
+     * Actualiza un usuario existente en Supabase
+     */
+    public boolean actualizarUsuario(Usuario usuario) {
+        String sql = "UPDATE usuarios SET nombre_completo = ?, email = ?, contraseña_hash = ?, " +
+                     "rol = ?, foto_perfil = ?, telefono = ?, activo = ? WHERE id_usuario = ?";
+
+        try (PreparedStatement pstmt = dbManager.prepararConsulta(sql)) {
+            pstmt.setString(1, usuario.getNombreCompleto());
+            pstmt.setString(2, usuario.getEmail());
+            pstmt.setString(3, usuario.getContraseñaHash());
+            pstmt.setString(4, usuario.getRol().name());
+            pstmt.setBytes(5, usuario.getFotoPerfil());
+            pstmt.setString(6, usuario.getTelefono());
+            pstmt.setBoolean(7, usuario.isActivo());
+            pstmt.setInt(8, usuario.getIdUsuario());
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                cargarUsuarios();
+                System.out.println("Usuario actualizado correctamente");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error actualizando usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Actualiza una tarea existente en Supabase
+     */
+    public boolean actualizarTarea(Tarea tarea) {
+        String sql = "UPDATE tareas SET titulo = ?, descripcion = ?, proyecto_categoria = ?, " +
+                     "estado = ?, prioridad = ?, fecha_limite = ?, tiempo_estimado_mins = ?, " +
+                     "imagen = ? WHERE id_tarea = ?";
+
+        try (PreparedStatement pstmt = dbManager.prepararConsulta(sql)) {
+            pstmt.setString(1, tarea.getTitulo());
+            pstmt.setString(2, tarea.getDescripcion());
+            pstmt.setString(3, tarea.getProyectoCategoria());
+            pstmt.setString(4, tarea.getEstado().name());
+            pstmt.setString(5, tarea.getPrioridad().name());
+            pstmt.setDate(6, tarea.getFechaLimite() != null ? Date.valueOf(tarea.getFechaLimite()) : null);
+            pstmt.setObject(7, tarea.getTiempoEstimadoMins() > 0 ? tarea.getTiempoEstimadoMins() : null);
+            pstmt.setBytes(8, tarea.getImagen());
+            pstmt.setInt(9, tarea.getIdTarea());
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                cargarTareas();
+                System.out.println("Tarea actualizada correctamente");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error actualizando tarea: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Actualiza una asignación existente en Supabase
+     */
+    public boolean actualizarAsignacion(Asignacion asignacion) {
+        String sql = "UPDATE asignaciones SET tarea_id = ?, usuario_id = ?, rol_asignacion = ?, " +
+                     "horas_asignadas = ?, completado = ?, notas = ? WHERE id_asignacion = ?";
+
+        try (PreparedStatement pstmt = dbManager.prepararConsulta(sql)) {
+            pstmt.setInt(1, asignacion.getTareaId());
+            pstmt.setInt(2, asignacion.getUsuarioId());
+            pstmt.setString(3, asignacion.getRolAsignacion());
+            pstmt.setDouble(4, asignacion.getHorasAsignadas());
+            pstmt.setBoolean(5, asignacion.isCompletado());
+            pstmt.setString(6, asignacion.getNotas());
+            pstmt.setInt(7, asignacion.getIdAsignacion());
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                cargarAsignaciones();
+                System.out.println("Asignacion actualizada correctamente");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error actualizando asignacion: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // ==================== MÉTODOS DE ELIMINACIÓN ====================
+
+    /**
+     * Elimina un usuario de Supabase
+     */
+    public boolean eliminarUsuario(int idUsuario) {
+        String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
+
+        try (PreparedStatement pstmt = dbManager.prepararConsulta(sql)) {
+            pstmt.setInt(1, idUsuario);
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                cargarUsuarios();
+                System.out.println("Usuario eliminado correctamente");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error eliminando usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Elimina una tarea de Supabase
+     */
+    public boolean eliminarTarea(int idTarea) {
+        String sql = "DELETE FROM tareas WHERE id_tarea = ?";
+
+        try (PreparedStatement pstmt = dbManager.prepararConsulta(sql)) {
+            pstmt.setInt(1, idTarea);
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                cargarTareas();
+                System.out.println("Tarea eliminada correctamente");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error eliminando tarea: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Elimina una asignación de Supabase
+     */
+    public boolean eliminarAsignacion(int idAsignacion) {
+        String sql = "DELETE FROM asignaciones WHERE id_asignacion = ?";
+
+        try (PreparedStatement pstmt = dbManager.prepararConsulta(sql)) {
+            pstmt.setInt(1, idAsignacion);
+
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                cargarAsignaciones();
+                System.out.println("Asignacion eliminada correctamente");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error eliminando asignacion: " + e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -268,6 +429,36 @@ public class DataManager {
 
     public ObservableList<Asignacion> getAsignaciones() {
         return asignaciones;
+    }
+
+    /**
+     * Busca un usuario por su ID
+     */
+    public Usuario obtenerUsuarioPorId(int idUsuario) {
+        return usuarios.stream()
+            .filter(u -> u.getIdUsuario() == idUsuario)
+            .findFirst()
+            .orElse(null);
+    }
+
+    /**
+     * Busca una tarea por su ID
+     */
+    public Tarea obtenerTareaPorId(int idTarea) {
+        return tareas.stream()
+            .filter(t -> t.getIdTarea() == idTarea)
+            .findFirst()
+            .orElse(null);
+    }
+
+    /**
+     * Busca una asignacion por su ID
+     */
+    public Asignacion obtenerAsignacionPorId(int idAsignacion) {
+        return asignaciones.stream()
+            .filter(a -> a.getIdAsignacion() == idAsignacion)
+            .findFirst()
+            .orElse(null);
     }
 
     /**

@@ -69,10 +69,10 @@ public class DatabaseManager {
 
             // Realizar conexión
             conexion = DriverManager.getConnection(url, user, password);
-            System.out.println("✅ Conexión a Supabase realizada exitosamente");
+            System.out.println("Conexion a Supabase realizada exitosamente");
 
         } catch (SQLException e) {
-            System.err.println("❌ Error al conectar con Supabase: " + e.getMessage());
+            System.err.println("Error al conectar con Supabase: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -100,7 +100,7 @@ public class DatabaseManager {
         if (conexion != null) {
             try {
                 conexion.close();
-                System.out.println("✅ Conexión a Supabase cerrada");
+                System.out.println("Conexion a Supabase cerrada");
             } catch (SQLException e) {
                 System.err.println("Error cerrando conexión: " + e.getMessage());
                 e.printStackTrace();
