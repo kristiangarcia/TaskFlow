@@ -314,22 +314,37 @@ public class MainController implements Initializable {
             {
                 btnEditar.setOnAction(event -> {
                     Usuario usuario = getTableView().getItems().get(getIndex());
-                    // Funcionalidad en desarrollo
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Editar Usuario");
                     alert.setHeaderText(null);
-                    alert.setContentText("Funcionalidad para editar usuario aún no está programada");
+                    alert.setContentText("Funcionalidad para editar usuario: " + usuario.getNombreCompleto() + "\n(Proximamente)");
                     alert.showAndWait();
                 });
 
                 btnEliminar.setOnAction(event -> {
                     Usuario usuario = getTableView().getItems().get(getIndex());
-                    // Funcionalidad en desarrollo
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Eliminar Usuario");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Funcionalidad para eliminar usuario aún no está programada");
-                    alert.showAndWait();
+                    Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmacion.setTitle("Confirmar eliminacion");
+                    confirmacion.setHeaderText("Eliminar usuario");
+                    confirmacion.setContentText("¿Estas seguro de eliminar a " + usuario.getNombreCompleto() + "?");
+
+                    confirmacion.showAndWait().ifPresent(response -> {
+                        if (response == javafx.scene.control.ButtonType.OK) {
+                            if (dataManager.eliminarUsuario(usuario.getIdUsuario())) {
+                                Alert exito = new Alert(Alert.AlertType.INFORMATION);
+                                exito.setTitle("Exito");
+                                exito.setHeaderText(null);
+                                exito.setContentText("Usuario eliminado correctamente");
+                                exito.showAndWait();
+                            } else {
+                                Alert error = new Alert(Alert.AlertType.ERROR);
+                                error.setTitle("Error");
+                                error.setHeaderText(null);
+                                error.setContentText("No se pudo eliminar el usuario");
+                                error.showAndWait();
+                            }
+                        }
+                    });
                 });
             }
 
@@ -413,29 +428,41 @@ public class MainController implements Initializable {
             {
                 btnEditar.setOnAction(event -> {
                     Tarea tarea = getTableView().getItems().get(getIndex());
-                    // Funcionalidad en desarrollo
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Editar Tarea");
                     alert.setHeaderText(null);
-                    alert.setContentText("Funcionalidad para editar tarea aún no está programada");
+                    alert.setContentText("Funcionalidad para editar tarea: " + tarea.getTitulo() + "\n(Proximamente)");
                     alert.showAndWait();
                 });
 
                 btnEliminar.setOnAction(event -> {
                     Tarea tarea = getTableView().getItems().get(getIndex());
-                    // Funcionalidad en desarrollo
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Eliminar Tarea");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Funcionalidad para eliminar tarea aún no está programada");
-                    alert.showAndWait();
+                    Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmacion.setTitle("Confirmar eliminacion");
+                    confirmacion.setHeaderText("Eliminar tarea");
+                    confirmacion.setContentText("¿Estas seguro de eliminar la tarea \"" + tarea.getTitulo() + "\"?");
+
+                    confirmacion.showAndWait().ifPresent(response -> {
+                        if (response == javafx.scene.control.ButtonType.OK) {
+                            if (dataManager.eliminarTarea(tarea.getIdTarea())) {
+                                Alert exito = new Alert(Alert.AlertType.INFORMATION);
+                                exito.setTitle("Exito");
+                                exito.setHeaderText(null);
+                                exito.setContentText("Tarea eliminada correctamente");
+                                exito.showAndWait();
+                            } else {
+                                Alert error = new Alert(Alert.AlertType.ERROR);
+                                error.setTitle("Error");
+                                error.setHeaderText(null);
+                                error.setContentText("No se pudo eliminar la tarea");
+                                error.showAndWait();
+                            }
+                        }
+                    });
                 });
 
                 btnAsignaciones.setOnAction(event -> {
-                    Tarea tarea = getTableView().getItems().get(getIndex());
-                    // Abrir diálogo de asignación para esta tarea
                     handleAsignaciones();
-                    System.out.println("Asignaciones for tarea: " + tarea.getTitulo());
                 });
             }
 
