@@ -52,5 +52,5 @@
     <Region VBox.vgrow="SOMETIMES" />
 
     <!-- Footer -->
-    <Label style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" text="TaskFlow v1.0.0" />
+    <Label style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" text="TaskFlow v0.0.1" />
 </VBox>

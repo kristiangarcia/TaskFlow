@@ -1,11 +1,12 @@
-# Documentacion del CRUD - TaskFlow
+# Documentacion del CRUD - TaskFlow v0.0.1
 
 ## Resumen
 
-Se ha implementado el CRUD completo para las entidades principales del proyecto TaskFlow:
-- Usuarios
+Se ha implementado el CRUD completo y sistema de autenticacion para TaskFlow:
+- Usuarios (con login)
 - Tareas
 - Asignaciones
+- Autenticacion con Supabase
 
 ## Estructura Implementada
 
@@ -118,8 +119,37 @@ Todas las operaciones utilizan PreparedStatement para:
 - Mejorar rendimiento
 - Facilitar el manejo de tipos de datos
 
+## Sistema de Autenticacion
+
+### AuthService
+Servicio singleton para autenticacion de usuarios:
+- `autenticar(email, password)`: Valida credenciales y guarda sesion
+- `getUsuarioActual()`: Retorna el usuario logueado
+- `cerrarSesion()`: Cierra la sesion actual
+- `isAutenticado()`: Verifica si hay sesion activa
+- `isAdmin()`: Verifica si el usuario es admin
+
+### LoginController
+Controlador de la vista de login:
+- Validacion de campos (email y password)
+- Autenticacion contra base de datos
+- Redireccion a ventana principal tras login exitoso
+- Soporte para Enter key
+
+### Integracion con Supabase Auth
+Scripts SQL en `src/main/resources/`:
+1. `01_schema_inicial.sql`: Schema completo de base de datos
+2. `02_auth_integration.sql`: Integracion con Supabase Auth
+3. `03_row_level_security.sql`: Politicas RLS
+
+Ver `README_SQL.md` para instrucciones de configuracion.
+
 ## Notas Importantes
 
-- Se utiliza el patron Singleton para DataManager
+- Se utiliza el patron Singleton para DataManager y AuthService
 - Las listas son ObservableList para integracion con JavaFX
 - Los modelos utilizan Properties de JavaFX para binding automatico
+- Version actual: v0.0.1 (desarrollo)
+- Sistema preparado para Supabase Auth con columna auth_id (UUID)
+- Para desarrollo inicial se valida contra tabla usuarios directamente
+- En produccion se usara Supabase Auth completamente

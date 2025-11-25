@@ -3,7 +3,7 @@ package com.taskflow.util;
 public class Constants {
     // Constantes de aplicación
     public static final String APP_TITLE = "TaskFlow";
-    public static final String APP_VERSION = "1.0.0";
+    public static final String APP_VERSION = "0.0.1";
 
     // Constantes de interfaz de usuario
     public static final int WINDOW_WIDTH = 1200;

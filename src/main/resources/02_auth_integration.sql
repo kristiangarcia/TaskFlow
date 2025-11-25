@@ -1,14 +1,23 @@
 -- ============================================
--- SINCRONIZACION DE AUTH.USERS CON USUARIOS
--- Para Supabase Authentication
+-- ACTUALIZACION SCHEMA PARA SUPABASE AUTH
 -- ============================================
 
--- Funcion para sincronizar cuando se crea un usuario en auth.users
+-- Agregar columna auth_id para vincular con auth.users
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS auth_id UUID UNIQUE;
+
+-- Crear indice para busquedas rapidas
+CREATE INDEX IF NOT EXISTS idx_usuarios_auth_id ON usuarios(auth_id);
+
+-- ============================================
+-- TRIGGER PARA SINCRONIZAR AUTH.USERS
+-- ============================================
+
+-- Funcion que se ejecuta cuando se crea un usuario en auth.users
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO public.usuarios (
-        id_usuario,
+        auth_id,
         nombre_completo,
         email,
         contraseña_hash,
@@ -18,10 +27,10 @@ BEGIN
         fecha_registro
     )
     VALUES (
-        NEW.id::integer,
+        NEW.id,
         COALESCE(NEW.raw_user_meta_data->>'nombre_completo', split_part(NEW.email, '@', 1)),
         NEW.email,
-        '',  -- La contraseña ya esta en auth.users, no la duplicamos
+        '',
         COALESCE((NEW.raw_user_meta_data->>'rol')::text, 'empleado'),
         NEW.raw_user_meta_data->>'telefono',
         true,
@@ -31,41 +40,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger que se ejecuta cuando se crea un usuario
+-- Crear trigger
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users
 FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_user();
 
 -- ============================================
--- FUNCIONES DE AUTENTICACION
+-- FUNCION HELPER PARA OBTENER ID_USUARIO
 -- ============================================
 
--- Funcion para verificar credenciales (alternativa mas segura)
-CREATE OR REPLACE FUNCTION public.verificar_credenciales(
-    p_email TEXT,
-    p_password TEXT
-)
-RETURNS TABLE (
-    id_usuario INTEGER,
-    nombre_completo VARCHAR,
-    email VARCHAR,
-    rol VARCHAR,
-    telefono VARCHAR,
-    activo BOOLEAN
-) AS $$
+-- Funcion para obtener id_usuario desde auth.uid()
+CREATE OR REPLACE FUNCTION public.get_usuario_id()
+RETURNS INTEGER AS $$
+DECLARE
+    user_id INTEGER;
 BEGIN
-    RETURN QUERY
-    SELECT
-        u.id_usuario,
-        u.nombre_completo,
-        u.email,
-        u.rol,
-        u.telefono,
-        u.activo
-    FROM usuarios u
-    WHERE u.email = p_email
-    AND u.activo = true
-    AND u.contraseña_hash = crypt(p_password, u.contraseña_hash);
+    SELECT id_usuario INTO user_id
+    FROM usuarios
+    WHERE auth_id = auth.uid();
+
+    RETURN user_id;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -3,6 +3,8 @@
 -- Politicas de seguridad a nivel de fila
 -- ============================================
 
+-- IMPORTANTE: Ejecutar 02_auth_integration.sql ANTES de este archivo
+
 -- Habilitar RLS en todas las tablas
 ALTER TABLE usuarios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tareas ENABLE ROW LEVEL SECURITY;
@@ -19,7 +21,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -31,7 +33,7 @@ TO authenticated
 WITH CHECK (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -43,7 +45,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -55,7 +57,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -64,14 +66,14 @@ USING (
 CREATE POLICY empleado_view_own_usuario ON usuarios
 FOR SELECT
 TO authenticated
-USING (id_usuario = auth.uid()::integer);
+USING (auth_id = auth.uid());
 
 -- Empleados pueden actualizar su propio perfil
 CREATE POLICY empleado_update_own_usuario ON usuarios
 FOR UPDATE
 TO authenticated
-USING (id_usuario = auth.uid()::integer)
-WITH CHECK (id_usuario = auth.uid()::integer);
+USING (auth_id = auth.uid())
+WITH CHECK (auth_id = auth.uid());
 
 -- ============================================
 -- POLITICAS PARA TABLA TAREAS
@@ -84,7 +86,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -96,7 +98,7 @@ TO authenticated
 WITH CHECK (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -108,7 +110,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -120,7 +122,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -131,9 +133,10 @@ FOR SELECT
 TO authenticated
 USING (
     EXISTS (
-        SELECT 1 FROM asignaciones
-        WHERE tarea_id = id_tarea
-        AND usuario_id = auth.uid()::integer
+        SELECT 1 FROM asignaciones a
+        INNER JOIN usuarios u ON a.usuario_id = u.id_usuario
+        WHERE a.tarea_id = id_tarea
+        AND u.auth_id = auth.uid()
     )
 );
 
@@ -143,9 +146,10 @@ FOR UPDATE
 TO authenticated
 USING (
     EXISTS (
-        SELECT 1 FROM asignaciones
-        WHERE tarea_id = id_tarea
-        AND usuario_id = auth.uid()::integer
+        SELECT 1 FROM asignaciones a
+        INNER JOIN usuarios u ON a.usuario_id = u.id_usuario
+        WHERE a.tarea_id = id_tarea
+        AND u.auth_id = auth.uid()
     )
 );
 
@@ -160,7 +164,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -172,7 +176,7 @@ TO authenticated
 WITH CHECK (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -184,7 +188,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -196,7 +200,7 @@ TO authenticated
 USING (
     EXISTS (
         SELECT 1 FROM usuarios
-        WHERE id_usuario = auth.uid()::integer
+        WHERE auth_id = auth.uid()
         AND rol = 'admin'
     )
 );
@@ -205,11 +209,29 @@ USING (
 CREATE POLICY empleado_view_own_asignaciones ON asignaciones
 FOR SELECT
 TO authenticated
-USING (usuario_id = auth.uid()::integer);
+USING (
+    EXISTS (
+        SELECT 1 FROM usuarios
+        WHERE id_usuario = asignaciones.usuario_id
+        AND auth_id = auth.uid()
+    )
+);
 
 -- Empleados pueden actualizar sus propias asignaciones (completado, notas)
 CREATE POLICY empleado_update_own_asignaciones ON asignaciones
 FOR UPDATE
 TO authenticated
-USING (usuario_id = auth.uid()::integer)
-WITH CHECK (usuario_id = auth.uid()::integer);
+USING (
+    EXISTS (
+        SELECT 1 FROM usuarios
+        WHERE id_usuario = asignaciones.usuario_id
+        AND auth_id = auth.uid()
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM usuarios
+        WHERE id_usuario = asignaciones.usuario_id
+        AND auth_id = auth.uid()
+    )
+);
