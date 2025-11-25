@@ -40,12 +40,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Crear trigger
+-- Crear trigger para INSERT
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users
 FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_user();
+
+-- ============================================
+-- TRIGGER PARA SINCRONIZAR ELIMINACION
+-- ============================================
+
+-- Funcion que se ejecuta cuando se elimina un usuario en auth.users
+CREATE OR REPLACE FUNCTION public.handle_user_deleted()
+RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM public.usuarios WHERE auth_id = OLD.id;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Crear trigger para DELETE
+DROP TRIGGER IF EXISTS on_auth_user_deleted ON auth.users;
+CREATE TRIGGER on_auth_user_deleted
+AFTER DELETE ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION public.handle_user_deleted();
 
 -- ============================================
 -- FUNCION HELPER PARA OBTENER ID_USUARIO
