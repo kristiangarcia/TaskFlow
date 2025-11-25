@@ -101,9 +101,8 @@ public class ModalNuevoUsuarioController implements Initializable {
 
     private void validarTelefono(StringBuilder errores) {
         String telefono = txtTelefono.getText();
-        if (Validaciones.esTextoVacio(telefono)) {
-            errores.append("- ").append(Constants.MSG_TELEFONO_OBLIGATORIO).append("\n");
-        } else if (!Validaciones.esTelefonoValido(telefono.trim())) {
+        // Telefono es opcional, solo validar formato si no esta vacio
+        if (!Validaciones.esTextoVacio(telefono) && !Validaciones.esTelefonoValido(telefono.trim())) {
             errores.append("- ").append(Constants.MSG_TELEFONO_INVALIDO).append("\n");
         }
     }

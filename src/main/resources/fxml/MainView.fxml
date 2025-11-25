@@ -27,10 +27,10 @@
 
     <!-- Centro: Panel de pestañas con 4 pestañas -->
     <center>
-        <TabPane fx:id="tabPane">
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
 
             <!-- Pestaña 1: Panel de control Administrador -->
-            <Tab text="Dashboard Admin" closable="false">
+            <Tab fx:id="tabDashboardAdmin" text="Dashboard Admin" closable="false">
                 <VBox spacing="20" style="-fx-padding: 20;">
 
                     <!-- Sección 1: Cuadrícula de métricas -->
@@ -87,7 +87,7 @@
             </Tab>
 
             <!-- Pestaña 2: Gestión de Usuarios -->
-            <Tab text="Gestión Usuarios" closable="false">
+            <Tab fx:id="tabGestionUsuarios" text="Gestión Usuarios" closable="false">
                 <VBox spacing="15" style="-fx-padding: 20;">
 
                     <!-- Barra de herramientas HBox -->
@@ -117,7 +117,7 @@
             </Tab>
 
             <!-- Pestaña 3: Gestión de Tareas -->
-            <Tab text="Gestión Tareas" closable="false">
+            <Tab fx:id="tabGestionTareas" text="Gestión Tareas" closable="false">
                 <VBox spacing="15" style="-fx-padding: 20;">
 
                     <!-- Barra de herramientas HBox -->
@@ -145,7 +145,7 @@
             </Tab>
 
             <!-- Pestaña 4: Panel de control Empleado -->
-            <Tab text="Dashboard Empleado" closable="false">
+            <Tab fx:id="tabDashboardEmpleado" text="Dashboard Empleado" closable="false">
                 <ScrollPane fitToWidth="true" fitToHeight="true">
                 <VBox spacing="20" style="-fx-padding: 20;">
 

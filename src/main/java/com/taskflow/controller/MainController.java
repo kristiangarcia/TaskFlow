@@ -18,8 +18,27 @@ import com.taskflow.view.ViewManager;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import static com.taskflow.util.Constants.*;
+import com.taskflow.service.AuthService;
 
 public class MainController implements Initializable {
+
+    // ===========================
+    // TabPane y Tabs
+    // ===========================
+    @FXML
+    private TabPane tabPane;
+
+    @FXML
+    private Tab tabDashboardAdmin;
+
+    @FXML
+    private Tab tabGestionUsuarios;
+
+    @FXML
+    private Tab tabGestionTareas;
+
+    @FXML
+    private Tab tabDashboardEmpleado;
 
     // ===========================
     // Botones de barra de herramientas
@@ -208,11 +227,34 @@ public class MainController implements Initializable {
         // Obtener instancia de DataManager
         dataManager = DataManager.getInstance();
 
+        // Configurar visibilidad de pestañas según rol del usuario
+        configurarVistaPorRol();
+
         // Inicializar las 4 pestañas
         initializeDashboardAdmin();
         initializeGestionUsuarios();
         initializeGestionTareas();
         initializeDashboardEmpleado();
+    }
+
+    // ===========================
+    // Configuración de visibilidad por rol
+    // ===========================
+    private void configurarVistaPorRol() {
+        AuthService authService = AuthService.getInstance();
+        Usuario usuarioActual = authService.getUsuarioActual();
+
+        if (usuarioActual != null) {
+            if (usuarioActual.getRol() == Rol.empleado) {
+                // Si es empleado, solo mostrar Dashboard Empleado
+                tabPane.getTabs().remove(tabDashboardAdmin);
+                tabPane.getTabs().remove(tabGestionUsuarios);
+                tabPane.getTabs().remove(tabGestionTareas);
+            } else if (usuarioActual.getRol() == Rol.admin) {
+                // Si es admin, solo mostrar pestañas de administración
+                tabPane.getTabs().remove(tabDashboardEmpleado);
+            }
+        }
     }
 
     // ===========================
