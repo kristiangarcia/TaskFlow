@@ -4,7 +4,7 @@ import com.taskflow.view.ViewManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import static com.taskflow.util.Constants.*;
@@ -21,20 +21,22 @@ public class Main extends Application {
             ViewManager viewManager = ViewManager.getInstance();
             viewManager.setPrimaryStage(primaryStage);
 
-            // Cargar la vista principal desde FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-            BorderPane root = loader.load();
+            // Cargar la vista de login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+            Pane root = loader.load();
 
-            // Configurar la ventana principal
-            primaryStage.setTitle("TaskFlow - Gestión Inteligente de Tareas");
+            // Configurar la ventana de login
+            primaryStage.setTitle(APP_TITLE + " - Login");
 
             // Crear y mostrar la escena
-            Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+            Scene scene = new Scene(root, 400, 600);
             primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.centerOnScreen();
             primaryStage.show();
 
         } catch (Exception e) {
-            System.err.println("Error al iniciar la aplicación");
+            System.err.println("Error al iniciar la aplicacion");
             e.printStackTrace();
         }
     }

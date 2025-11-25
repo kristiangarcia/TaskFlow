@@ -164,6 +164,19 @@ public class ViewManager {
     }
 
     /**
+     * Cambia la vista principal completa
+     */
+    public void cambiarVista(String fxmlPath, String titulo) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Pane root = loader.load();
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle(titulo);
+        primaryStage.centerOnScreen();
+    }
+
+    /**
      * Cierra una ventana
      */
     public void closeWindow(Window window) {

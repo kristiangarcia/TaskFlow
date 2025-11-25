@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.taskflow.controller.LoginController">
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+    </padding>
+
+    <!-- Logo/Titulo -->
+    <VBox alignment="CENTER" spacing="10.0">
+        <Label style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="TaskFlow" />
+        <Label style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;" text="Sistema de Gestion de Tareas" />
+    </VBox>
+
+    <Region VBox.vgrow="SOMETIMES" />
+
+    <!-- Formulario de Login -->
+    <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+        <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+        </padding>
+
+        <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Iniciar Sesion" />
+
+        <!-- Campo Email -->
+        <VBox spacing="5.0">
+            <Label style="-fx-font-size: 12px; -fx-text-fill: #34495e;" text="Email" />
+            <TextField fx:id="txtEmail" prefHeight="35.0" promptText="usuario@taskflow.com" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;" />
+        </VBox>
+
+        <!-- Campo Contraseña -->
+        <VBox spacing="5.0">
+            <Label style="-fx-font-size: 12px; -fx-text-fill: #34495e;" text="Contraseña" />
+            <PasswordField fx:id="txtPassword" prefHeight="35.0" promptText="••••••••" style="-fx-background-radius: 5; -fx-border-color: #bdc3c7; -fx-border-radius: 5;" />
+        </VBox>
+
+        <!-- Boton Login -->
+        <Button fx:id="btnLogin" maxWidth="Infinity" onAction="#handleLogin" prefHeight="40.0" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="Iniciar Sesion">
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Button>
+
+        <!-- Mensaje de error -->
+        <Label fx:id="lblError" style="-fx-text-fill: #e74c3c; -fx-font-size: 12px;" textAlignment="CENTER" visible="false" wrapText="true" />
+    </VBox>
+
+    <Region VBox.vgrow="SOMETIMES" />
+
+    <!-- Footer -->
+    <Label style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" text="TaskFlow v1.0.0" />
+</VBox>

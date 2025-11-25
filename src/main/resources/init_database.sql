@@ -36,10 +36,10 @@ CREATE TABLE tareas (
     id_tarea SERIAL PRIMARY KEY,
     titulo VARCHAR(150) NOT NULL CHECK (LENGTH(titulo) >= 3),
     descripcion TEXT CHECK (LENGTH(descripcion) <= 1000),
-    proyecto_categoria VARCHAR(100) NOT NULL, -- ✅ Campo de TEXTO LIBRE, NO foreign key
+    proyecto_categoria VARCHAR(100) NOT NULL, -- Campo de TEXTO LIBRE, NO foreign key
     estado VARCHAR(20) NOT NULL CHECK (estado IN ('abierta', 'en_progreso', 'completada', 'retrasada')),
     prioridad VARCHAR(10) NOT NULL CHECK (prioridad IN ('alta', 'media', 'baja')),
-    fecha_limite DATE NOT NULL, -- ✅ CORREGIDO: Sin CHECK de fecha futura (se valida en trigger)
+    fecha_limite DATE NOT NULL, -- Sin CHECK de fecha futura (se valida en trigger)
     tiempo_estimado_mins INTEGER NOT NULL CHECK (tiempo_estimado_mins BETWEEN 15 AND 999),
     imagen BYTEA, -- Imagen adjunta opcional
     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -85,7 +85,7 @@ CREATE TABLE asignaciones (
         ON DELETE CASCADE
         ON UPDATE CASCADE,
 
-    -- ✅ RESTRICCIÓN ÚNICA: un usuario no puede estar asignado dos veces a la misma tarea
+    -- RESTRICCION UNICA: un usuario no puede estar asignado dos veces a la misma tarea
     CONSTRAINT unique_usuario_tarea UNIQUE (usuario_id, tarea_id)
 );
 
@@ -105,7 +105,7 @@ COMMENT ON COLUMN asignaciones.completado IS 'Indica si el usuario completó su 
 -- TRIGGERS PARA VALIDACIONES AVANZADAS
 -- ============================================
 
--- ✅ Trigger: Validar que fecha_limite sea posterior a fecha_creacion SOLO EN INSERT
+-- Trigger: Validar que fecha_limite sea posterior a fecha_creacion SOLO EN INSERT
 CREATE OR REPLACE FUNCTION validar_fecha_limite_insert()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -122,7 +122,7 @@ BEFORE INSERT ON tareas
 FOR EACH ROW
 EXECUTE FUNCTION validar_fecha_limite_insert();
 
--- ✅ Trigger: En UPDATE, permitir cualquier fecha_limite pero advertir si es pasada
+-- Trigger: En UPDATE, permitir cualquier fecha_limite pero advertir si es pasada
 CREATE OR REPLACE FUNCTION validar_fecha_limite_update()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -284,11 +284,11 @@ SELECT
 -- CONSULTAS ÚTILES PARA LA APLICACIÓN
 -- ============================================
 
--- ✅ Verificar cardinalidad M:N
+-- Verificar cardinalidad M:N
 -- Un usuario con muchas tareas:
 -- SELECT * FROM vista_mis_tareas WHERE id_usuario = 2;
 
--- ✅ Una tarea con muchos usuarios:
+-- Una tarea con muchos usuarios:
 -- SELECT * FROM vista_asignaciones_por_tarea WHERE id_tarea = 1;
 
 -- Obtener tareas próximas a vencer (en los próximos 7 días)
@@ -317,7 +317,7 @@ SELECT
 -- GROUP BY u.id_usuario
 -- ORDER BY total_horas_asignadas DESC;
 
--- ✅ Verificar que NO se pueden duplicar asignaciones (debería fallar):
+-- Verificar que NO se pueden duplicar asignaciones (deberia fallar):
 -- INSERT INTO asignaciones (usuario_id, tarea_id, rol_asignacion, horas_asignadas)
 -- VALUES (2, 1, 'colaborador', 5.0);
 -- ERROR: duplicate key value violates unique constraint "unique_usuario_tarea"
