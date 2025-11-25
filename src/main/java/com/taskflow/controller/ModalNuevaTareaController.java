@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 public class ModalNuevaTareaController implements Initializable {
 
+    @FXML private Label lblTitulo;
     @FXML private TextField txtTitulo;
     @FXML private TextArea txtDescripcion;
     @FXML private TextField txtCategoria;
@@ -27,6 +28,7 @@ public class ModalNuevaTareaController implements Initializable {
     @FXML private Button btnCancelar;
 
     private DataManager dataManager;
+    private Tarea tareaEditar; // null si es nueva, contiene la tarea si es edición
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -34,11 +36,39 @@ public class ModalNuevaTareaController implements Initializable {
         inicializarCombos();
     }
 
+    /**
+     * Configura el modal para editar una tarea existente
+     */
+    public void setTareaEditar(Tarea tarea) {
+        this.tareaEditar = tarea;
+        if (lblTitulo != null) {
+            lblTitulo.setText("Editar Tarea");
+        }
+        cargarDatosTarea();
+    }
+
     private void inicializarCombos() {
         comboPrioridad.getItems().addAll("alta", "media", "baja");
         comboPrioridad.setValue("media");
         comboEstado.getItems().addAll("abierta", "en_progreso", "completada", "retrasada");
         comboEstado.setValue("abierta");
+    }
+
+    /**
+     * Carga los datos de la tarea en el formulario (modo edición)
+     */
+    private void cargarDatosTarea() {
+        if (tareaEditar != null) {
+            txtTitulo.setText(tareaEditar.getTitulo());
+            txtDescripcion.setText(tareaEditar.getDescripcion());
+            txtCategoria.setText(tareaEditar.getProyectoCategoria() != null ? tareaEditar.getProyectoCategoria() : "");
+            comboPrioridad.setValue(tareaEditar.getPrioridad().name());
+            comboEstado.setValue(tareaEditar.getEstado().name());
+            dateFechaLimite.setValue(tareaEditar.getFechaLimite());
+            if (tareaEditar.getTiempoEstimadoMins() > 0) {
+                txtTiempoEstimado.setText(String.valueOf(tareaEditar.getTiempoEstimadoMins()));
+            }
+        }
     }
 
     @FXML
@@ -49,11 +79,20 @@ public class ModalNuevaTareaController implements Initializable {
             return;
         }
 
-        Tarea nuevaTarea = crearTareaDesdeFormulario();
-        boolean exito = dataManager.insertarTarea(nuevaTarea);
+        boolean exito;
+        if (tareaEditar == null) {
+            // Modo crear
+            Tarea nuevaTarea = crearTareaDesdeFormulario();
+            exito = dataManager.insertarTarea(nuevaTarea);
+        } else {
+            // Modo editar
+            Tarea tareaActualizada = actualizarTareaDesdeFormulario();
+            exito = dataManager.actualizarTarea(tareaActualizada);
+        }
 
         if (exito) {
-            AlertHelper.mostrarExito(Constants.TITULO_EXITO, Constants.MSG_TAREA_CREADA);
+            String mensaje = tareaEditar == null ? Constants.MSG_TAREA_CREADA : "Tarea actualizada correctamente";
+            AlertHelper.mostrarExito(Constants.TITULO_EXITO, mensaje);
             cerrarVentana();
         } else {
             AlertHelper.mostrarError(Constants.TITULO_ERROR, Constants.MSG_TAREA_ERROR);
@@ -69,6 +108,24 @@ public class ModalNuevaTareaController implements Initializable {
         LocalDate fechaLimite = dateFechaLimite.getValue();
 
         Tarea tarea = new Tarea(0, titulo, descripcion, categoria, estado, prioridad, fechaLimite);
+
+        Integer tiempoEstimado = obtenerTiempoEstimado();
+        if (tiempoEstimado != null) {
+            tarea.setTiempoEstimadoMins(tiempoEstimado);
+        }
+
+        return tarea;
+    }
+
+    private Tarea actualizarTareaDesdeFormulario() {
+        String titulo = txtTitulo.getText().trim();
+        String descripcion = txtDescripcion.getText().trim();
+        String categoria = txtCategoria.getText().trim();
+        Prioridad prioridad = Prioridad.valueOf(comboPrioridad.getValue());
+        EstadoTarea estado = EstadoTarea.valueOf(comboEstado.getValue());
+        LocalDate fechaLimite = dateFechaLimite.getValue();
+
+        Tarea tarea = new Tarea(tareaEditar.getIdTarea(), titulo, descripcion, categoria, estado, prioridad, fechaLimite);
 
         Integer tiempoEstimado = obtenerTiempoEstimado();
         if (tiempoEstimado != null) {

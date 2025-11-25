@@ -356,11 +356,7 @@ public class MainController implements Initializable {
             {
                 btnEditar.setOnAction(event -> {
                     Usuario usuario = getTableView().getItems().get(getIndex());
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Editar Usuario");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Funcionalidad para editar usuario: " + usuario.getNombreCompleto() + "\n(Proximamente)");
-                    alert.showAndWait();
+                    handleEditarUsuario(usuario);
                 });
 
                 btnEliminar.setOnAction(event -> {
@@ -470,11 +466,7 @@ public class MainController implements Initializable {
             {
                 btnEditar.setOnAction(event -> {
                     Tarea tarea = getTableView().getItems().get(getIndex());
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Editar Tarea");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Funcionalidad para editar tarea: " + tarea.getTitulo() + "\n(Proximamente)");
-                    alert.showAndWait();
+                    handleEditarTarea(tarea);
                 });
 
                 btnEliminar.setOnAction(event -> {
@@ -634,5 +626,49 @@ public class MainController implements Initializable {
     @FXML
     void handleAsignaciones() {
         ViewManager.getInstance().openModalFxml("/fxml/ModalAsignaciones.fxml", "Asignaciones", 800, 600);
+    }
+
+    void handleEditarUsuario(Usuario usuario) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/fxml/ModalNuevoUsuario.fxml")
+            );
+            javafx.scene.layout.Pane content = loader.load();
+
+            // Obtener el controlador y configurarlo para edición
+            ModalNuevoUsuarioController controller = loader.getController();
+            controller.setUsuarioEditar(usuario);
+
+            // Abrir modal
+            ViewManager.getInstance().openModal("Editar Usuario", content, 600, 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("No se pudo abrir el formulario de edición");
+            alert.showAndWait();
+        }
+    }
+
+    void handleEditarTarea(Tarea tarea) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/fxml/ModalNuevaTarea.fxml")
+            );
+            javafx.scene.layout.Pane content = loader.load();
+
+            // Obtener el controlador y configurarlo para edición
+            ModalNuevaTareaController controller = loader.getController();
+            controller.setTareaEditar(tarea);
+
+            // Abrir modal
+            ViewManager.getInstance().openModal("Editar Tarea", content, 700, 600);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("No se pudo abrir el formulario de edición");
+            alert.showAndWait();
+        }
     }
 }

@@ -6,7 +6,7 @@
 <VBox spacing="15" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.taskflow.controller.ModalNuevoUsuarioController">
 
     <!-- Título -->
-    <Label text="Nuevo Usuario" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <Label fx:id="lblTitulo" text="Nuevo Usuario" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
     <!-- Cuadrícula de formulario -->
     <GridPane hgap="10" vgap="10">
@@ -31,7 +31,7 @@
         <ComboBox fx:id="comboRol" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
         <!-- Fila 5: Contraseña -->
-        <Label text="Contraseña *" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <Label fx:id="lblPasswordLabel" text="Contraseña *" GridPane.columnIndex="0" GridPane.rowIndex="5" />
         <PasswordField fx:id="txtPassword" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
         <!-- Fila 6: Activo -->
