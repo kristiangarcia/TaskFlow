@@ -10,8 +10,9 @@ CREATE TABLE usuarios (
     id_usuario SERIAL PRIMARY KEY,
     nombre_completo VARCHAR(100) NOT NULL CHECK (LENGTH(nombre_completo) >= 3),
     email VARCHAR(150) NOT NULL UNIQUE CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
+    contraseña_hash VARCHAR(255) NOT NULL,
     rol VARCHAR(20) NOT NULL CHECK (rol IN ('admin', 'empleado')),
-    foto_perfil BYTEA, -- BLOB en PostgreSQL es BYTEA
+    foto_perfil BYTEA,
     fecha_registro DATE NOT NULL DEFAULT CURRENT_DATE,
     telefono VARCHAR(15) CHECK (telefono ~* '^\+?[0-9\s\-()]+$'),
     activo BOOLEAN NOT NULL DEFAULT TRUE
@@ -24,6 +25,7 @@ CREATE INDEX idx_usuarios_activo ON usuarios(activo);
 
 -- Comentarios descriptivos
 COMMENT ON TABLE usuarios IS 'Empleados y administradores del sistema TaskFlow';
+COMMENT ON COLUMN usuarios.contraseña_hash IS 'Contraseña hasheada con bcrypt';
 COMMENT ON COLUMN usuarios.foto_perfil IS 'Imagen de perfil en formato binario (JPG, PNG, max 5MB)';
 COMMENT ON COLUMN usuarios.activo IS 'Indica si el usuario puede acceder al sistema';
 

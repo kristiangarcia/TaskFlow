@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.taskflow'
-version = '1.0-SNAPSHOT'
+version = '0.0.1'
 
 repositories {
     mavenCentral()
@@ -13,6 +13,9 @@ repositories {
 dependencies {
     // PostgreSQL JDBC Driver para Supabase
     implementation 'org.postgresql:postgresql:42.7.3'
+
+    // BCrypt para hasheo de passwords
+    implementation 'org.mindrot:jbcrypt:0.4'
 }
 
 javafx {

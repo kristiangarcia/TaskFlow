@@ -64,8 +64,11 @@ public class ModalNuevoUsuarioController implements Initializable {
         Rol rol = Rol.valueOf(comboRol.getValue());
         boolean activo = checkActivo.isSelected();
 
+        // Hashear password con bcrypt
+        String passwordHash = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());
+
         Usuario usuario = new Usuario(0, nombre, email, telefono, rol, activo);
-        usuario.setContraseñaHash(password);
+        usuario.setContraseñaHash(passwordHash);
         return usuario;
     }
 

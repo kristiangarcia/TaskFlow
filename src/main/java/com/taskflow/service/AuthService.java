@@ -27,9 +27,7 @@ public class AuthService {
     }
 
     /**
-     * Autentica un usuario con email y contraseña
-     * NOTA: En produccion, la contraseña debe estar hasheada con bcrypt
-     * Para simplificar el desarrollo, se compara directamente
+     * Autentica un usuario con email y contraseña usando bcrypt
      */
     public boolean autenticar(String email, String password) {
         String sql = "SELECT id_usuario, nombre_completo, email, contraseña_hash, rol, " +
@@ -41,11 +39,10 @@ public class AuthService {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    String passwordHash = rs.getString("contraseña_hash");
+                    String contraseñaHash = rs.getString("contraseña_hash");
 
-                    // TODO: Implementar verificacion bcrypt en produccion
-                    // Por ahora, comparacion directa para desarrollo
-                    if (password.equals(passwordHash)) {
+                    // Verificar password con bcrypt
+                    if (org.mindrot.jbcrypt.BCrypt.checkpw(password, contraseñaHash)) {
                         usuarioActual = mapearUsuario(rs);
                         System.out.println("Autenticacion exitosa: " + usuarioActual.getNombreCompleto());
                         return true;
