@@ -164,16 +164,24 @@ public class ViewManager {
     }
 
     /**
-     * Cambia la vista principal completa
+     * Cambia la vista principal completa con tamaño específico
      */
-    public void cambiarVista(String fxmlPath, String titulo) throws IOException {
+    public void cambiarVista(String fxmlPath, String titulo, int width, int height) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         Pane root = loader.load();
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, width, height);
         primaryStage.setScene(scene);
         primaryStage.setTitle(titulo);
+        primaryStage.setResizable(true);
         primaryStage.centerOnScreen();
+    }
+
+    /**
+     * Cambia la vista principal completa con tamaño por defecto
+     */
+    public void cambiarVista(String fxmlPath, String titulo) throws IOException {
+        cambiarVista(fxmlPath, titulo, 1200, 800);
     }
 
     /**
