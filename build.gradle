@@ -16,6 +16,9 @@ dependencies {
 
     // BCrypt para hasheo de passwords
     implementation 'org.mindrot:jbcrypt:0.4'
+
+    // ControlsFX para validación visual
+    implementation 'org.controlsfx:controlsfx:11.2.1'
 }
 
 javafx {

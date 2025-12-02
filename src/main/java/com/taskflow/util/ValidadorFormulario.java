@@ -2,6 +2,9 @@ package com.taskflow.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import javafx.scene.control.Control;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
 
 /**
  * Clase para manejar validación de formularios con retroalimentación por campo
@@ -9,9 +12,14 @@ import java.util.Map;
 public class ValidadorFormulario {
 
     private Map<String, String> errores;
+    private ValidationSupport validationSupport;
+    private Map<String, Control> controles;
 
     public ValidadorFormulario() {
         this.errores = new HashMap<>();
+        this.controles = new HashMap<>();
+        this.validationSupport = new ValidationSupport();
+        this.validationSupport.setErrorDecorationEnabled(true);
     }
 
     /**
@@ -176,5 +184,48 @@ public class ValidadorFormulario {
      */
     public void limpiar() {
         errores.clear();
+        controles.clear();
+    }
+
+    /**
+     * Registra un control para validación visual
+     */
+    public void registrarControl(String nombreCampo, Control control) {
+        controles.put(nombreCampo, control);
+    }
+
+    /**
+     * Valida el formulario y muestra errores visuales en los controles
+     */
+    public void validarVisualmente() {
+        // Limpiar decoraciones previas
+        validationSupport.redecorate();
+
+        // Registrar validadores para cada control con error
+        for (Map.Entry<String, Control> entry : controles.entrySet()) {
+            String nombreCampo = entry.getKey();
+            Control control = entry.getValue();
+            String error = errores.get(nombreCampo);
+
+            if (error != null) {
+                // Hay error en este campo
+                validationSupport.registerValidator(control, false,
+                    Validator.createPredicateValidator(
+                        v -> false, // Siempre falla para mostrar el error
+                        error
+                    )
+                );
+            }
+        }
+
+        // Redibujar las decoraciones
+        validationSupport.redecorate();
+    }
+
+    /**
+     * Obtiene el ValidationSupport para control externo si es necesario
+     */
+    public ValidationSupport getValidationSupport() {
+        return validationSupport;
     }
 }
