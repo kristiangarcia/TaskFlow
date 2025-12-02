@@ -199,11 +199,17 @@ public class ValidadorFormulario {
      * Valida el formulario y muestra errores visuales en los controles
      */
     public void validarVisualmente() {
-        // Limpiar validadores previos
+        // Limpiar decoraciones previas de TODOS los controles
+        for (Control control : controles.values()) {
+            control.setStyle("");
+            control.getStyleClass().remove("has-error");
+        }
+
+        // Crear nuevo ValidationSupport
         validationSupport = new ValidationSupport();
         validationSupport.setErrorDecorationEnabled(true);
 
-        // Registrar validadores para los campos con error
+        // Registrar validadores para TODOS los campos
         for (Map.Entry<String, Control> entry : controles.entrySet()) {
             String nombreCampo = entry.getKey();
             Control control = entry.getValue();
@@ -215,6 +221,15 @@ public class ValidadorFormulario {
                     Validator.createPredicateValidator(
                         v -> false,
                         error,
+                        Severity.ERROR
+                    )
+                );
+            } else {
+                // No hay error - registrar validador que siempre pasa
+                validationSupport.registerValidator(control, true,
+                    Validator.createPredicateValidator(
+                        v -> true,
+                        "",
                         Severity.ERROR
                     )
                 );
