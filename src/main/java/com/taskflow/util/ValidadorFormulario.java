@@ -5,6 +5,7 @@ import java.util.Map;
 import javafx.scene.control.Control;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
+import org.controlsfx.validation.Severity;
 
 /**
  * Clase para manejar validación de formularios con retroalimentación por campo
@@ -198,28 +199,30 @@ public class ValidadorFormulario {
      * Valida el formulario y muestra errores visuales en los controles
      */
     public void validarVisualmente() {
-        // Limpiar decoraciones previas
-        validationSupport.redecorate();
+        // Limpiar validadores previos
+        validationSupport = new ValidationSupport();
+        validationSupport.setErrorDecorationEnabled(true);
 
-        // Registrar validadores para cada control con error
+        // Registrar validadores para los campos con error
         for (Map.Entry<String, Control> entry : controles.entrySet()) {
             String nombreCampo = entry.getKey();
             Control control = entry.getValue();
             String error = errores.get(nombreCampo);
 
             if (error != null) {
-                // Hay error en este campo
+                // Hay error en este campo - registrar validador que siempre falla
                 validationSupport.registerValidator(control, false,
                     Validator.createPredicateValidator(
-                        v -> false, // Siempre falla para mostrar el error
-                        error
+                        v -> false,
+                        error,
+                        Severity.ERROR
                     )
                 );
             }
         }
 
-        // Redibujar las decoraciones
-        validationSupport.redecorate();
+        // Inicializar decoraciones
+        validationSupport.initInitialDecoration();
     }
 
     /**
