@@ -6,6 +6,7 @@ import com.taskflow.util.AlertHelper;
 import com.taskflow.util.Constants;
 import com.taskflow.util.DataManager;
 import com.taskflow.util.Validaciones;
+import com.taskflow.util.ValidadorFormulario;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import java.net.URL;
@@ -136,49 +137,27 @@ public class ModalNuevoUsuarioController implements Initializable {
     }
 
     private String validarCampos() {
-        StringBuilder errores = new StringBuilder();
+        ValidadorFormulario validador = new ValidadorFormulario();
 
         // Validar nombre (obligatorio, 3-100 caracteres)
-        String nombre = txtNombre.getText();
-        if (!Validaciones.esNombreValido(nombre)) {
-            errores.append("- El nombre es obligatorio y debe tener entre 3 y 100 caracteres\n");
-        }
+        validador.validarNombre("Nombre", txtNombre.getText());
 
         // Validar email (obligatorio, formato válido)
-        String email = txtEmail.getText();
-        if (Validaciones.esTextoVacio(email)) {
-            errores.append("- El email es obligatorio\n");
-        } else if (!Validaciones.esEmailValido(email)) {
-            errores.append("- El email no tiene un formato válido (ejemplo: usuario@dominio.com)\n");
-        }
+        validador.validarEmail("Email", txtEmail.getText());
 
         // Validar teléfono (OPCIONAL - si proporciona debe ser válido)
-        String telefono = txtTelefono.getText();
-        if (!Validaciones.esTelefonoValido(telefono)) {
-            errores.append("- El teléfono debe tener entre 9 y 15 dígitos (opcional)\n");
-        }
+        validador.validarTelefono("Teléfono", txtTelefono.getText());
 
         // Validar rol (obligatorio)
-        String rol = comboRol.getValue();
-        if (!Validaciones.esRolValido(rol)) {
-            errores.append("- Debe seleccionar un rol válido (admin o empleado)\n");
-        }
+        validador.validarRol("Rol", comboRol.getValue());
 
         // Validar contraseña
         String password = txtPassword.getText();
-        if (usuarioEditar == null) {
-            // En modo creación, la contraseña es obligatoria
-            if (!Validaciones.esContraseñaValida(password)) {
-                errores.append("- La contraseña es obligatoria y debe tener mínimo 6 caracteres\n");
-            }
-        } else {
-            // En modo edición, la contraseña es opcional pero si se proporciona debe ser válida
-            if (!password.isEmpty() && !Validaciones.esContraseñaValida(password)) {
-                errores.append("- La contraseña debe tener mínimo 6 caracteres\n");
-            }
-        }
+        boolean passwordObligatorio = (usuarioEditar == null);
+        validador.validarPassword("Contraseña", password, passwordObligatorio);
 
-        return errores.length() > 0 ? errores.toString() : null;
+        // Retornar errores si existen
+        return validador.obtenerErroresFormateados();
     }
 
     @FXML

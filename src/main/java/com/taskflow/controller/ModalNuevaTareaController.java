@@ -7,6 +7,7 @@ import com.taskflow.util.AlertHelper;
 import com.taskflow.util.Constants;
 import com.taskflow.util.DataManager;
 import com.taskflow.util.Validaciones;
+import com.taskflow.util.ValidadorFormulario;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import java.net.URL;
@@ -148,55 +149,38 @@ public class ModalNuevaTareaController implements Initializable {
     }
 
     private String validarCampos() {
-        StringBuilder errores = new StringBuilder();
+        ValidadorFormulario validador = new ValidadorFormulario();
 
         // Validar título (obligatorio)
-        String titulo = txtTitulo.getText();
-        if (Validaciones.esTextoVacio(titulo)) {
-            errores.append("- El título es obligatorio\n");
-        }
+        validador.validarNoVacio("Título", txtTitulo.getText(), "Es obligatorio");
 
         // Validar descripción (obligatorio)
-        String descripcion = txtDescripcion.getText();
-        if (Validaciones.esTextoVacio(descripcion)) {
-            errores.append("- La descripción es obligatoria\n");
-        }
+        validador.validarNoVacio("Descripción", txtDescripcion.getText(), "Es obligatoria");
 
         // Validar categoría (obligatorio)
-        String categoria = txtCategoria.getText();
-        if (Validaciones.esTextoVacio(categoria)) {
-            errores.append("- La categoría es obligatoria\n");
-        }
+        validador.validarNoVacio("Categoría", txtCategoria.getText(), "Es obligatoria");
 
         // Validar prioridad (obligatorio)
-        String prioridad = comboPrioridad.getValue();
-        if (Validaciones.esTextoVacio(prioridad)) {
-            errores.append("- La prioridad es obligatoria\n");
-        }
+        validador.validarNoVacio("Prioridad", comboPrioridad.getValue(), "Es obligatoria");
 
         // Validar estado (obligatorio)
-        String estado = comboEstado.getValue();
-        if (Validaciones.esTextoVacio(estado)) {
-            errores.append("- El estado es obligatorio\n");
-        }
+        validador.validarNoVacio("Estado", comboEstado.getValue(), "Es obligatorio");
 
         // Validar fecha límite (obligatorio, no puede ser en el pasado)
         LocalDate fecha = dateFechaLimite.getValue();
         if (fecha == null) {
-            errores.append("- La fecha límite es obligatoria\n");
+            validador.agregarError("Fecha límite", "Es obligatoria");
         } else if (fecha.isBefore(LocalDate.now())) {
-            errores.append("- La fecha límite no puede ser anterior a hoy\n");
+            validador.agregarError("Fecha límite", "No puede ser anterior a hoy");
+        } else {
+            validador.removerError("Fecha límite");
         }
 
         // Validar tiempo estimado (OPCIONAL - si proporciona debe ser positivo)
-        String tiempo = txtTiempoEstimado.getText();
-        if (!Validaciones.esTextoVacio(tiempo)) {
-            if (!Validaciones.esNumeroPositivo(tiempo)) {
-                errores.append("- El tiempo estimado debe ser un número positivo (opcional)\n");
-            }
-        }
+        validador.validarNumeroPositivo("Tiempo estimado", txtTiempoEstimado.getText(), false);
 
-        return errores.length() > 0 ? errores.toString() : null;
+        // Retornar errores si existen
+        return validador.obtenerErroresFormateados();
     }
 
     @FXML

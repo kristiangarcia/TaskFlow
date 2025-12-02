@@ -19,7 +19,7 @@
         <TextArea fx:id="txtDescripcion" promptText="Descripción detallada" prefRowCount="4" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <!-- Fila 2: Categoría -->
-        <Label text="Categoría" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Label text="Categoría *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
         <TextField fx:id="txtCategoria" promptText="ej: Desarrollo Web, Marketing" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <!-- Fila 3: Prioridad -->
