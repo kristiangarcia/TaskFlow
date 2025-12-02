@@ -150,63 +150,53 @@ public class ModalNuevaTareaController implements Initializable {
     private String validarCampos() {
         StringBuilder errores = new StringBuilder();
 
-        validarTitulo(errores);
-        validarDescripcion(errores);
-        validarCategoria(errores);
-        validarPrioridad(errores);
-        validarEstado(errores);
-        validarFechaLimite(errores);
-        validarTiempoEstimado(errores);
-
-        return errores.length() > 0 ? errores.toString() : null;
-    }
-
-    private void validarTitulo(StringBuilder errores) {
-        if (Validaciones.esTextoVacio(txtTitulo.getText())) {
-            errores.append("- ").append(Constants.MSG_TITULO_OBLIGATORIO).append("\n");
+        // Validar título (obligatorio)
+        String titulo = txtTitulo.getText();
+        if (Validaciones.esTextoVacio(titulo)) {
+            errores.append("- El título es obligatorio\n");
         }
-    }
 
-    private void validarDescripcion(StringBuilder errores) {
-        if (Validaciones.esTextoVacio(txtDescripcion.getText())) {
-            errores.append("- ").append(Constants.MSG_DESCRIPCION_OBLIGATORIA).append("\n");
+        // Validar descripción (obligatorio)
+        String descripcion = txtDescripcion.getText();
+        if (Validaciones.esTextoVacio(descripcion)) {
+            errores.append("- La descripción es obligatoria\n");
         }
-    }
 
-    private void validarCategoria(StringBuilder errores) {
-        if (Validaciones.esTextoVacio(txtCategoria.getText())) {
-            errores.append("- ").append(Constants.MSG_CATEGORIA_OBLIGATORIA).append("\n");
+        // Validar categoría (obligatorio)
+        String categoria = txtCategoria.getText();
+        if (Validaciones.esTextoVacio(categoria)) {
+            errores.append("- La categoría es obligatoria\n");
         }
-    }
 
-    private void validarPrioridad(StringBuilder errores) {
-        if (comboPrioridad.getValue() == null) {
-            errores.append("- ").append(Constants.MSG_PRIORIDAD_OBLIGATORIA).append("\n");
+        // Validar prioridad (obligatorio)
+        String prioridad = comboPrioridad.getValue();
+        if (Validaciones.esTextoVacio(prioridad)) {
+            errores.append("- La prioridad es obligatoria\n");
         }
-    }
 
-    private void validarEstado(StringBuilder errores) {
-        if (comboEstado.getValue() == null) {
-            errores.append("- ").append(Constants.MSG_ESTADO_OBLIGATORIO).append("\n");
+        // Validar estado (obligatorio)
+        String estado = comboEstado.getValue();
+        if (Validaciones.esTextoVacio(estado)) {
+            errores.append("- El estado es obligatorio\n");
         }
-    }
 
-    private void validarFechaLimite(StringBuilder errores) {
+        // Validar fecha límite (obligatorio, no puede ser en el pasado)
         LocalDate fecha = dateFechaLimite.getValue();
         if (fecha == null) {
-            errores.append("- ").append(Constants.MSG_FECHA_OBLIGATORIA).append("\n");
+            errores.append("- La fecha límite es obligatoria\n");
         } else if (fecha.isBefore(LocalDate.now())) {
-            errores.append("- ").append(Constants.MSG_FECHA_INVALIDA).append("\n");
+            errores.append("- La fecha límite no puede ser anterior a hoy\n");
         }
-    }
 
-    private void validarTiempoEstimado(StringBuilder errores) {
+        // Validar tiempo estimado (OPCIONAL - si proporciona debe ser positivo)
         String tiempo = txtTiempoEstimado.getText();
         if (!Validaciones.esTextoVacio(tiempo)) {
-            if (!Validaciones.esNumeroPositivo(tiempo.trim())) {
-                errores.append("- ").append(Constants.MSG_TIEMPO_POSITIVO).append("\n");
+            if (!Validaciones.esNumeroPositivo(tiempo)) {
+                errores.append("- El tiempo estimado debe ser un número positivo (opcional)\n");
             }
         }
+
+        return errores.length() > 0 ? errores.toString() : null;
     }
 
     @FXML

@@ -138,59 +138,47 @@ public class ModalNuevoUsuarioController implements Initializable {
     private String validarCampos() {
         StringBuilder errores = new StringBuilder();
 
-        validarNombre(errores);
-        validarEmail(errores);
-        validarTelefono(errores);
-        validarPassword(errores);
-        validarRol(errores);
-
-        return errores.length() > 0 ? errores.toString() : null;
-    }
-
-    private void validarNombre(StringBuilder errores) {
-        if (Validaciones.esTextoVacio(txtNombre.getText())) {
-            errores.append("- ").append(Constants.MSG_NOMBRE_OBLIGATORIO).append("\n");
+        // Validar nombre (obligatorio, 3-100 caracteres)
+        String nombre = txtNombre.getText();
+        if (!Validaciones.esNombreValido(nombre)) {
+            errores.append("- El nombre es obligatorio y debe tener entre 3 y 100 caracteres\n");
         }
-    }
 
-    private void validarEmail(StringBuilder errores) {
+        // Validar email (obligatorio, formato válido)
         String email = txtEmail.getText();
         if (Validaciones.esTextoVacio(email)) {
-            errores.append("- ").append(Constants.MSG_EMAIL_OBLIGATORIO).append("\n");
-        } else if (!Validaciones.esEmailValido(email.trim())) {
-            errores.append("- ").append(Constants.MSG_EMAIL_INVALIDO).append("\n");
+            errores.append("- El email es obligatorio\n");
+        } else if (!Validaciones.esEmailValido(email)) {
+            errores.append("- El email no tiene un formato válido (ejemplo: usuario@dominio.com)\n");
         }
-    }
 
-    private void validarTelefono(StringBuilder errores) {
+        // Validar teléfono (OPCIONAL - si proporciona debe ser válido)
         String telefono = txtTelefono.getText();
-        // Telefono es opcional, solo validar formato si no esta vacio
-        if (!Validaciones.esTextoVacio(telefono) && !Validaciones.esTelefonoValido(telefono.trim())) {
-            errores.append("- ").append(Constants.MSG_TELEFONO_INVALIDO).append("\n");
+        if (!Validaciones.esTelefonoValido(telefono)) {
+            errores.append("- El teléfono debe tener entre 9 y 15 dígitos (opcional)\n");
         }
-    }
 
-    private void validarPassword(StringBuilder errores) {
+        // Validar rol (obligatorio)
+        String rol = comboRol.getValue();
+        if (!Validaciones.esRolValido(rol)) {
+            errores.append("- Debe seleccionar un rol válido (admin o empleado)\n");
+        }
+
+        // Validar contraseña
         String password = txtPassword.getText();
-
-        // En modo edición, la contraseña es opcional (solo si se quiere cambiar)
-        if (usuarioEditar != null && Validaciones.esTextoVacio(password)) {
-            // Contraseña vacía en modo edición es válido (mantiene la existente)
-            return;
+        if (usuarioEditar == null) {
+            // En modo creación, la contraseña es obligatoria
+            if (!Validaciones.esContraseñaValida(password)) {
+                errores.append("- La contraseña es obligatoria y debe tener mínimo 6 caracteres\n");
+            }
+        } else {
+            // En modo edición, la contraseña es opcional pero si se proporciona debe ser válida
+            if (!password.isEmpty() && !Validaciones.esContraseñaValida(password)) {
+                errores.append("- La contraseña debe tener mínimo 6 caracteres\n");
+            }
         }
 
-        // En modo creación, la contraseña es obligatoria
-        if (usuarioEditar == null && Validaciones.esTextoVacio(password)) {
-            errores.append("- ").append(Constants.MSG_PASSWORD_OBLIGATORIO).append("\n");
-        } else if (!Validaciones.esTextoVacio(password) && !Validaciones.longitudMinima(password, Constants.MIN_PASSWORD_LENGTH)) {
-            errores.append("- ").append(String.format(Constants.MSG_PASSWORD_CORTO, Constants.MIN_PASSWORD_LENGTH)).append("\n");
-        }
-    }
-
-    private void validarRol(StringBuilder errores) {
-        if (comboRol.getValue() == null) {
-            errores.append("- ").append(Constants.MSG_ROL_OBLIGATORIO).append("\n");
-        }
+        return errores.length() > 0 ? errores.toString() : null;
     }
 
     @FXML
