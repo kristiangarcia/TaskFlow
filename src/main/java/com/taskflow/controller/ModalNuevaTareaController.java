@@ -10,6 +10,7 @@ import com.taskflow.util.Validaciones;
 import com.taskflow.util.ValidadorFormulario;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.application.Platform;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -74,9 +75,15 @@ public class ModalNuevaTareaController implements Initializable {
 
     @FXML
     void handleGuardar() {
-        String errores = validarCampos();
-        if (errores != null) {
-            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION, errores);
+        ValidadorFormulario validador = validarCampos();
+
+        if (validador.tieneErrores()) {
+            // Mostrar validación visual (campos en rojo) después de renderizar
+            Platform.runLater(validador::validarVisualmente);
+
+            // Mostrar alerta con errores
+            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION,
+                validador.obtenerErroresFormateados());
             return;
         }
 
@@ -148,8 +155,17 @@ public class ModalNuevaTareaController implements Initializable {
         return null;
     }
 
-    private String validarCampos() {
+    private ValidadorFormulario validarCampos() {
         ValidadorFormulario validador = new ValidadorFormulario();
+
+        // Registrar controles para validación visual
+        validador.registrarControl("Título", txtTitulo);
+        validador.registrarControl("Descripción", txtDescripcion);
+        validador.registrarControl("Categoría", txtCategoria);
+        validador.registrarControl("Prioridad", comboPrioridad);
+        validador.registrarControl("Estado", comboEstado);
+        validador.registrarControl("Fecha límite", dateFechaLimite);
+        validador.registrarControl("Tiempo estimado", txtTiempoEstimado);
 
         // Validar título (obligatorio)
         validador.validarNoVacio("Título", txtTitulo.getText(), "Es obligatorio");
@@ -186,8 +202,8 @@ public class ModalNuevaTareaController implements Initializable {
             validador.removerError("Tiempo estimado");
         }
 
-        // Retornar errores si existen
-        return validador.obtenerErroresFormateados();
+        // Retornar validador
+        return validador;
     }
 
     @FXML

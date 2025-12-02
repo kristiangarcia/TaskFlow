@@ -9,6 +9,7 @@ import com.taskflow.util.Validaciones;
 import com.taskflow.util.ValidadorFormulario;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.application.Platform;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
@@ -72,9 +73,15 @@ public class ModalNuevoUsuarioController implements Initializable {
 
     @FXML
     void handleGuardar() {
-        String errores = validarCampos();
-        if (errores != null) {
-            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION, errores);
+        ValidadorFormulario validador = validarCampos();
+
+        if (validador.tieneErrores()) {
+            // Mostrar validación visual (campos en rojo) después de renderizar
+            Platform.runLater(validador::validarVisualmente);
+
+            // Mostrar alerta con errores
+            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION,
+                validador.obtenerErroresFormateados());
             return;
         }
 
@@ -144,8 +151,15 @@ public class ModalNuevoUsuarioController implements Initializable {
         return usuario;
     }
 
-    private String validarCampos() {
+    private ValidadorFormulario validarCampos() {
         ValidadorFormulario validador = new ValidadorFormulario();
+
+        // Registrar controles para validación visual
+        validador.registrarControl("Nombre", txtNombre);
+        validador.registrarControl("Email", txtEmail);
+        validador.registrarControl("Teléfono", txtTelefono);
+        validador.registrarControl("Rol", comboRol);
+        validador.registrarControl("Contraseña", txtPassword);
 
         // Validar nombre (obligatorio, 3-100 caracteres)
         validador.validarNombre("Nombre", txtNombre.getText());
@@ -164,8 +178,8 @@ public class ModalNuevoUsuarioController implements Initializable {
         boolean passwordObligatorio = (usuarioEditar == null);
         validador.validarPassword("Contraseña", password, passwordObligatorio);
 
-        // Retornar errores si existen
-        return validador.obtenerErroresFormateados();
+        // Retornar validador
+        return validador;
     }
 
     @FXML
