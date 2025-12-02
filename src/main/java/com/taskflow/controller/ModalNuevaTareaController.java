@@ -176,8 +176,15 @@ public class ModalNuevaTareaController implements Initializable {
             validador.removerError("Fecha límite");
         }
 
-        // Validar tiempo estimado (OPCIONAL - si proporciona debe ser positivo)
-        validador.validarNumeroPositivo("Tiempo estimado", txtTiempoEstimado.getText(), false);
+        // Validar tiempo estimado (OBLIGATORIO - debe estar entre 15 y 999 minutos)
+        String tiempoTexto = txtTiempoEstimado.getText();
+        if (Validaciones.esTextoVacio(tiempoTexto)) {
+            validador.agregarError("Tiempo estimado", "Es obligatorio (15-999 minutos)");
+        } else if (!Validaciones.numeroEnRango(tiempoTexto, 15, 999)) {
+            validador.agregarError("Tiempo estimado", "Debe estar entre 15 y 999 minutos");
+        } else {
+            validador.removerError("Tiempo estimado");
+        }
 
         // Retornar errores si existen
         return validador.obtenerErroresFormateados();

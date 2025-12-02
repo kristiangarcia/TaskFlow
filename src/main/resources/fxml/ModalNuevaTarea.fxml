@@ -35,7 +35,7 @@
         <DatePicker fx:id="dateFechaLimite" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
         <!-- Fila 6: Tiempo estimado -->
-        <Label text="Tiempo estimado (min)" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <Label text="Tiempo estimado (min) *" GridPane.columnIndex="0" GridPane.rowIndex="6" />
         <TextField fx:id="txtTiempoEstimado" promptText="120" GridPane.columnIndex="1" GridPane.rowIndex="6" />
     </GridPane>
 
