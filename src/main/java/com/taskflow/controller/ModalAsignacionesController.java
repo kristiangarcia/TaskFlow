@@ -2,6 +2,7 @@ package com.taskflow.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.application.Platform;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
@@ -10,6 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import com.taskflow.model.*;
 import com.taskflow.util.DataManager;
+import com.taskflow.util.ValidadorFormulario;
+import com.taskflow.util.AlertHelper;
+import com.taskflow.util.Constants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -65,6 +69,7 @@ public class ModalAsignacionesController implements Initializable {
 
     private DataManager dataManager;
     private ObservableList<Asignacion> asignaciones;
+    private Asignacion asignacionEditar; // null si es nueva, contiene la asignación si es edición
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -197,40 +202,22 @@ public class ModalAsignacionesController implements Initializable {
 
     @FXML
     void handleAnadirAsignacion() {
+        ValidadorFormulario validador = validarAsignacion();
+
+        if (validador.tieneErrores()) {
+            // Mostrar validación visual (campos en rojo) después de renderizar
+            Platform.runLater(validador::validarVisualmente);
+
+            // Mostrar alerta con errores
+            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION,
+                validador.obtenerErroresFormateados());
+            return;
+        }
+
         String usuarioSeleccionado = comboUsuario.getValue();
         String rol = txtRol.getText().trim();
         String horasTexto = txtHoras.getText().trim();
-
-        // Validar campos
-        if (usuarioSeleccionado == null || usuarioSeleccionado.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Validación");
-            alert.setContentText("Debes seleccionar un usuario");
-            alert.showAndWait();
-            return;
-        }
-
-        if (rol.isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Validación");
-            alert.setContentText("Debes especificar un rol");
-            alert.showAndWait();
-            return;
-        }
-
-        double horas;
-        try {
-            horas = Double.parseDouble(horasTexto);
-            if (horas <= 0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Validación");
-            alert.setContentText("Las horas deben ser un número positivo");
-            alert.showAndWait();
-            return;
-        }
+        double horas = Double.parseDouble(horasTexto);
 
         // Encontrar el usuario por nombre
         Usuario usuario = dataManager.getUsuarios().stream()
@@ -239,10 +226,7 @@ public class ModalAsignacionesController implements Initializable {
             .orElse(null);
 
         if (usuario == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setContentText("Usuario no encontrado");
-            alert.showAndWait();
+            AlertHelper.mostrarError("Error", "Usuario no encontrado");
             return;
         }
 
@@ -252,23 +236,17 @@ public class ModalAsignacionesController implements Initializable {
         if (dataManager.insertarAsignacion(nuevaAsignacion)) {
             loadAsignaciones();
             updateSummaryLabels();
-            // Limpiar campos
-            comboUsuario.setValue(null);
-            txtRol.clear();
-            txtHoras.clear();
-            Alert exito = new Alert(Alert.AlertType.INFORMATION);
-            exito.setTitle("Éxito");
-            exito.setContentText("Asignación creada correctamente");
-            exito.showAndWait();
+            resetFormulario();
+            AlertHelper.mostrarExito("Éxito", "Asignación creada correctamente");
         } else {
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Error");
-            error.setContentText("No se pudo crear la asignación");
-            error.showAndWait();
+            AlertHelper.mostrarError("Error", "No se pudo crear la asignación");
         }
     }
 
     void handleEditarAsignacion(Asignacion asignacion) {
+        // Guardar la asignación en modo edición
+        asignacionEditar = asignacion;
+
         // Prellenar campos con datos de la asignación
         Usuario usuario = dataManager.getUsuarios().stream()
             .filter(u -> u.getIdUsuario() == asignacion.getUsuarioId())
@@ -283,50 +261,41 @@ public class ModalAsignacionesController implements Initializable {
 
         // Cambiar el botón para modo edición
         btnAnadirAsignacion.setText("Actualizar");
-        btnAnadirAsignacion.setOnAction(event -> {
-            String rol = txtRol.getText().trim();
-            String horasTexto = txtHoras.getText().trim();
+        btnAnadirAsignacion.setOnAction(event -> handleActualizarAsignacion());
+    }
 
-            if (rol.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Validación");
-                alert.setContentText("Debes especificar un rol");
-                alert.showAndWait();
-                return;
-            }
+    private void handleActualizarAsignacion() {
+        if (asignacionEditar == null) {
+            return;
+        }
 
-            double horas;
-            try {
-                horas = Double.parseDouble(horasTexto);
-                if (horas <= 0) {
-                    throw new NumberFormatException();
-                }
-            } catch (NumberFormatException e) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Validación");
-                alert.setContentText("Las horas deben ser un número positivo");
-                alert.showAndWait();
-                return;
-            }
+        ValidadorFormulario validador = validarAsignacion();
 
-            asignacion.setRolAsignacion(rol);
-            asignacion.setHorasAsignadas(horas);
+        if (validador.tieneErrores()) {
+            // Mostrar validación visual (campos en rojo) después de renderizar
+            Platform.runLater(validador::validarVisualmente);
 
-            if (dataManager.actualizarAsignacion(asignacion)) {
-                loadAsignaciones();
-                updateSummaryLabels();
-                resetFormulario();
-                Alert exito = new Alert(Alert.AlertType.INFORMATION);
-                exito.setTitle("Éxito");
-                exito.setContentText("Asignación actualizada correctamente");
-                exito.showAndWait();
-            } else {
-                Alert error = new Alert(Alert.AlertType.ERROR);
-                error.setTitle("Error");
-                error.setContentText("No se pudo actualizar la asignación");
-                error.showAndWait();
-            }
-        });
+            // Mostrar alerta con errores
+            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION,
+                validador.obtenerErroresFormateados());
+            return;
+        }
+
+        String rol = txtRol.getText().trim();
+        String horasTexto = txtHoras.getText().trim();
+        double horas = Double.parseDouble(horasTexto);
+
+        asignacionEditar.setRolAsignacion(rol);
+        asignacionEditar.setHorasAsignadas(horas);
+
+        if (dataManager.actualizarAsignacion(asignacionEditar)) {
+            loadAsignaciones();
+            updateSummaryLabels();
+            resetFormulario();
+            AlertHelper.mostrarExito("Éxito", "Asignación actualizada correctamente");
+        } else {
+            AlertHelper.mostrarError("Error", "No se pudo actualizar la asignación");
+        }
     }
 
     private void resetFormulario() {
@@ -335,6 +304,51 @@ public class ModalAsignacionesController implements Initializable {
         txtHoras.clear();
         btnAnadirAsignacion.setText("Añadir");
         btnAnadirAsignacion.setOnAction(event -> handleAnadirAsignacion());
+        asignacionEditar = null; // Limpiar modo edición
+    }
+
+    private ValidadorFormulario validarAsignacion() {
+        ValidadorFormulario validador = new ValidadorFormulario();
+
+        // Registrar controles para validación visual
+        validador.registrarControl("Usuario", comboUsuario);
+        validador.registrarControl("Rol", txtRol);
+        validador.registrarControl("Horas", txtHoras);
+
+        // Validar usuario (obligatorio)
+        String usuarioSeleccionado = comboUsuario.getValue();
+        if (usuarioSeleccionado == null || usuarioSeleccionado.isEmpty()) {
+            validador.agregarError("Usuario", "Debes seleccionar un usuario");
+        } else {
+            validador.removerError("Usuario");
+        }
+
+        // Validar rol (obligatorio)
+        String rol = txtRol.getText().trim();
+        if (rol.isEmpty()) {
+            validador.agregarError("Rol", "Debes especificar un rol");
+        } else {
+            validador.removerError("Rol");
+        }
+
+        // Validar horas (obligatorio, debe ser número positivo)
+        String horasTexto = txtHoras.getText().trim();
+        if (horasTexto.isEmpty()) {
+            validador.agregarError("Horas", "Las horas son obligatorias");
+        } else {
+            try {
+                double horas = Double.parseDouble(horasTexto);
+                if (horas <= 0) {
+                    validador.agregarError("Horas", "Las horas deben ser un número positivo");
+                } else {
+                    validador.removerError("Horas");
+                }
+            } catch (NumberFormatException e) {
+                validador.agregarError("Horas", "Las horas deben ser un número válido");
+            }
+        }
+
+        return validador;
     }
 
     @FXML
