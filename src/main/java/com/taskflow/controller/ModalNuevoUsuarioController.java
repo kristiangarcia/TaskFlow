@@ -102,6 +102,10 @@ public class ModalNuevoUsuarioController implements Initializable {
         String nombre = txtNombre.getText().trim();
         String email = txtEmail.getText().trim();
         String telefono = txtTelefono.getText().trim();
+        // Si el teléfono está vacío, pasarlo como null para que se guarde NULL en BD
+        if (telefono.isEmpty()) {
+            telefono = null;
+        }
         String password = txtPassword.getText();
         Rol rol = Rol.valueOf(comboRol.getValue());
         boolean activo = checkActivo.isSelected();
@@ -118,6 +122,10 @@ public class ModalNuevoUsuarioController implements Initializable {
         String nombre = txtNombre.getText().trim();
         String email = txtEmail.getText().trim();
         String telefono = txtTelefono.getText().trim();
+        // Si el teléfono está vacío, pasarlo como null para que se guarde NULL en BD
+        if (telefono.isEmpty()) {
+            telefono = null;
+        }
         String password = txtPassword.getText();
         Rol rol = Rol.valueOf(comboRol.getValue());
         boolean activo = checkActivo.isSelected();
