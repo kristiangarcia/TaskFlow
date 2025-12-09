@@ -24,8 +24,8 @@
         <ComboBox fx:id="comboUsuario" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <!-- Fila 1: Rol en tarea -->
-        <Label text="Rol en tarea" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="txtRol" promptText="ej: Diseñador UI, Desarrollador" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label text="Rol en tarea *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="comboRol" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <!-- Fila 2: Horas asignadas -->
         <Label text="Horas asignadas" GridPane.columnIndex="0" GridPane.rowIndex="2" />

@@ -29,7 +29,7 @@ public class ModalAsignacionesController implements Initializable {
     private ComboBox<String> comboUsuario;
 
     @FXML
-    private TextField txtRol;
+    private ComboBox<String> comboRol;
 
     @FXML
     private TextField txtHoras;
@@ -80,6 +80,16 @@ public class ModalAsignacionesController implements Initializable {
         for (Usuario usuario : dataManager.getUsuarios()) {
             comboUsuario.getItems().add(usuario.getNombreCompleto());
         }
+
+        // Poblar comboRol con roles válidos
+        comboRol.getItems().addAll(
+            "Desarrollador",
+            "Diseñador",
+            "Gerente",
+            "Revisor",
+            "Tester",
+            "Documentador"
+        );
 
         // Configurar columnas de TableView
         setupTableColumns();
@@ -237,7 +247,7 @@ public class ModalAsignacionesController implements Initializable {
         }
 
         String usuarioSeleccionado = comboUsuario.getValue();
-        String rol = txtRol.getText().trim();
+        String rol = comboRol.getValue();
         String horasTexto = txtHoras.getText().trim();
         double horas = Double.parseDouble(horasTexto);
 
@@ -278,7 +288,7 @@ public class ModalAsignacionesController implements Initializable {
         if (usuario != null) {
             comboUsuario.setValue(usuario.getNombreCompleto());
         }
-        txtRol.setText(asignacion.getRolAsignacion());
+        comboRol.setValue(asignacion.getRolAsignacion());
         txtHoras.setText(String.valueOf(asignacion.getHorasAsignadas()));
 
         // Cambiar el botón para modo edición
@@ -303,7 +313,7 @@ public class ModalAsignacionesController implements Initializable {
             return;
         }
 
-        String rol = txtRol.getText().trim();
+        String rol = comboRol.getValue();
         String horasTexto = txtHoras.getText().trim();
         double horas = Double.parseDouble(horasTexto);
 
@@ -322,7 +332,7 @@ public class ModalAsignacionesController implements Initializable {
 
     private void resetFormulario() {
         comboUsuario.setValue(null);
-        txtRol.clear();
+        comboRol.setValue(null);
         txtHoras.clear();
         btnAnadirAsignacion.setText("Añadir");
         btnAnadirAsignacion.setOnAction(event -> handleAnadirAsignacion());
@@ -334,7 +344,7 @@ public class ModalAsignacionesController implements Initializable {
 
         // Registrar controles para validación visual
         validador.registrarControl("Usuario", comboUsuario);
-        validador.registrarControl("Rol", txtRol);
+        validador.registrarControl("Rol", comboRol);
         validador.registrarControl("Horas", txtHoras);
 
         // Validar usuario (obligatorio)
@@ -346,9 +356,9 @@ public class ModalAsignacionesController implements Initializable {
         }
 
         // Validar rol (obligatorio)
-        String rol = txtRol.getText().trim();
-        if (rol.isEmpty()) {
-            validador.agregarError("Rol", "Debes especificar un rol");
+        String rol = comboRol.getValue();
+        if (rol == null || rol.isEmpty()) {
+            validador.agregarError("Rol", "Debes seleccionar un rol");
         } else {
             validador.removerError("Rol");
         }
