@@ -1,82 +1,92 @@
 /* =====================================================
-   TASKFLOW - Hoja de estilos CSS
-   Basado en mockups de interfaz de usuario
+   TASKFLOW - Hoja de estilos CSS (Tema Azul)
+   Diseño moderno con paleta azul profesional
    ===================================================== */
 
-/* Paleta de colores */
+/* Paleta de colores - TEMA AZUL */
 :root {
-    -fx-color-primary: #27AE60;
+    -fx-color-primary: #3498DB;
+    -fx-color-primary-dark: #2980B9;
+    -fx-color-primary-light: #EBF5FB;
     -fx-color-dark: #2C3E50;
     -fx-color-surface: #ECF0F1;
     -fx-color-text: #2C3E50;
     -fx-color-text-subtle: #7F8C8D;
     -fx-color-border: #BDC3C7;
     -fx-color-danger: #E74C3C;
+    -fx-color-success: #27AE60;
     -fx-color-warning: #F39C12;
     -fx-color-info: #3498DB;
 }
 
-/* Estilos globales */
+/* Estilos globales mejorados */
 .root {
     -fx-font-family: "Segoe UI", Arial, sans-serif;
     -fx-font-size: 10pt;
     -fx-base: #ffffff;
-    -fx-background-color: #ffffff;
+    -fx-background-color: #f8f9fa;
     -fx-control-inner-background: #ffffff;
     -fx-text-fill: #2C3E50;
 }
 
 /* Transiciones globales suaves */
 * {
-    -fx-transition: all 0.2s ease;
+    -fx-transition: all 0.25s ease;
 }
 
 /* =====================================================
-   BOTONES
+   BOTONES - TEMA AZUL
    ===================================================== */
 
 .button {
-    -fx-padding: 6 12 6 12;
+    -fx-padding: 8 14 8 14;
     -fx-background-color: #ffffff;
     -fx-text-fill: #2C3E50;
     -fx-font-size: 10pt;
     -fx-font-weight: 500;
-    -fx-border-color: #BDC3C7;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-cursor: hand;
     -fx-transition: all 0.3s ease;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
 }
 
 .button:hover {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #f0f7ff;
+    -fx-border-color: #3498DB;
     -fx-scale-x: 1.02;
     -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.15), 4, 0, 0, 2);
 }
 
 .button:pressed {
-    -fx-background-color: #e0e0e0;
+    -fx-background-color: #e8f0f7;
     -fx-scale-x: 0.98;
     -fx-scale-y: 0.98;
 }
 
+/* Botones primarios - AZUL */
 .button-primary {
-    -fx-background-color: #27AE60;
+    -fx-background-color: #3498DB;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #27AE60;
+    -fx-border-color: #3498DB;
     -fx-font-weight: 600;
     -fx-transition: all 0.3s ease;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.2), 3, 0, 0, 1);
 }
 
 .button-primary:hover {
-    -fx-background-color: #229954;
+    -fx-background-color: #2980B9;
+    -fx-border-color: #2980B9;
     -fx-scale-x: 1.05;
     -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(41,128,185,0.3), 6, 0, 0, 2);
 }
 
 .button-primary:pressed {
-    -fx-background-color: #1d7d47;
+    -fx-background-color: #1F618D;
     -fx-scale-x: 0.95;
     -fx-scale-y: 0.95;
 }
@@ -85,34 +95,40 @@
     -fx-background-color: #E74C3C;
     -fx-text-fill: #ffffff;
     -fx-border-color: #E74C3C;
+    -fx-effect: dropshadow(gaussian, rgba(231,76,60,0.2), 3, 0, 0, 1);
 }
 
 .button-danger:hover {
     -fx-background-color: #C0392B;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(192,57,43,0.3), 6, 0, 0, 2);
 }
 
 /* =====================================================
-   CAMPOS DE ENTRADA
+   CAMPOS DE ENTRADA - MEJORA VISUAL
    ===================================================== */
 
 .text-field, .password-field, .text-area {
     -fx-font-size: 10pt;
-    -fx-padding: 6 8 6 8;
-    -fx-border-color: #BDC3C7;
+    -fx-padding: 8 10 8 10;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-background-color: #ffffff;
     -fx-text-fill: #2C3E50;
     -fx-control-inner-background: #ffffff;
-    -fx-prompt-text-fill: #7F8C8D;
+    -fx-prompt-text-fill: #95A5A6;
     -fx-transition: all 0.2s ease;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 2, 0, 0, 1);
 }
 
 .text-field:focused, .password-field:focused, .text-area:focused {
-    -fx-border-color: #27AE60;
+    -fx-border-color: #3498DB;
     -fx-border-width: 2;
-    -fx-background-color: #f9fffa;
+    -fx-background-color: #f0f7ff;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.15), 4, 0, 0, 2);
 }
 
 .text-field:disabled, .password-field:disabled, .text-area:disabled {
@@ -121,35 +137,37 @@
 }
 
 /* =====================================================
-   COMBO BOX Y SELECTORES
+   COMBO BOX Y SELECTORES - TEMA AZUL
    ===================================================== */
 
 .combo-box, .choice-box {
     -fx-font-size: 10pt;
-    -fx-padding: 6 8 6 8;
-    -fx-border-color: #BDC3C7;
+    -fx-padding: 8 10 8 10;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-background-color: #ffffff;
     -fx-text-fill: #2C3E50;
     -fx-transition: all 0.2s ease;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 2, 0, 0, 1);
 }
 
 .combo-box:focused, .choice-box:focused {
-    -fx-border-color: #27AE60;
+    -fx-border-color: #3498DB;
     -fx-border-width: 2;
-    -fx-background-color: #f9fffa;
+    -fx-background-color: #f0f7ff;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.15), 4, 0, 0, 2);
 }
 
 .combo-box-popup .list-cell:filled:selected,
 .combo-box-popup .list-cell:filled:selected:hover {
-    -fx-background-color: #27AE60;
+    -fx-background-color: #3498DB;
     -fx-text-fill: #ffffff;
 }
 
 /* =====================================================
-   CHECKBOX
+   CHECKBOX - TEMA AZUL
    ===================================================== */
 
 .check-box {
@@ -158,20 +176,20 @@
 }
 
 .check-box .box {
-    -fx-border-color: #BDC3C7;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 1;
-    -fx-padding: 3;
-    -fx-border-radius: 3;
+    -fx-padding: 4;
+    -fx-border-radius: 4;
     -fx-background-color: #ffffff;
 }
 
 .check-box:selected .box {
-    -fx-background-color: #27AE60;
-    -fx-border-color: #27AE60;
+    -fx-background-color: #3498DB;
+    -fx-border-color: #3498DB;
 }
 
 /* =====================================================
-   ETIQUETAS
+   ETIQUETAS - MEJORADO
    ===================================================== */
 
 .label {
@@ -186,9 +204,9 @@
 }
 
 .label-title {
-    -fx-font-size: 16pt;
+    -fx-font-size: 18pt;
     -fx-font-weight: bold;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #1A5276;
 }
 
 .label-subtle {
@@ -197,57 +215,53 @@
 }
 
 /* =====================================================
-   TABLAS
+   TABLAS - TEMA AZUL
    ===================================================== */
 
 .table-view {
-    -fx-table-cell-border-color: #e8e8e8;
+    -fx-table-cell-border-color: #EAECEE;
     -fx-table-header-border-color: #2C3E50;
     -fx-font-size: 10pt;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #2C3E50;
-    -fx-border-color: #2C3E50;
+    -fx-background-color: #34495E;
+    -fx-border-color: #34495E;
 }
 
 .table-view .column-header {
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
     -fx-font-size: 10pt;
-    -fx-padding: 8 6 8 6;
-    -fx-background-color: #2C3E50;
-}
-
-.table-view .column-header .label {
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
+    -fx-padding: 10 8 10 8;
+    -fx-background-color: #34495E;
 }
 
 .table-view .table-cell {
-    -fx-padding: 8 6 8 6;
+    -fx-padding: 10 8 10 8;
     -fx-text-fill: #2C3E50;
-    -fx-border-color: #e8e8e8;
+    -fx-border-color: #EAECEE;
     -fx-border-width: 0 0 1 0;
 }
 
 .table-view .table-row-cell {
     -fx-background-color: #ffffff;
-    -fx-cell-size: 40;
+    -fx-cell-size: 42;
     -fx-transition: all 0.2s ease;
 }
 
 .table-view .table-row-cell:hover {
-    -fx-background-color: #f8f8f8;
+    -fx-background-color: #EBF5FB;
     -fx-scale-x: 1.01;
 }
 
 .table-view .table-row-cell:selected {
-    -fx-background-color: #E8F8F5;
+    -fx-background-color: #D6EAF8;
 }
 
 /* =====================================================
-   BARRAS DE DESPLAZAMIENTO
+   SCROLL BAR - MEJORADO
    ===================================================== */
 
 .scroll-bar {
@@ -257,10 +271,11 @@
 .scroll-bar:vertical .thumb {
     -fx-background-color: #BDC3C7;
     -fx-background-radius: 5;
+    -fx-transition: all 0.2s ease;
 }
 
 .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #a9a9a9;
+    -fx-background-color: #3498DB;
 }
 
 /* =====================================================
@@ -268,58 +283,48 @@
    ===================================================== */
 
 .separator {
-    -fx-border-color: #BDC3C7;
+    -fx-border-color: #D5DBDB;
 }
 
 /* =====================================================
-   BADGES Y ETIQUETAS DE ESTADO
+   BADGES Y ETIQUETAS DE ESTADO - TEMA AZUL
    ===================================================== */
 
 .badge {
-    -fx-padding: 3 6 3 6;
+    -fx-padding: 4 8 4 8;
     -fx-border-radius: 12;
     -fx-font-size: 8pt;
     -fx-font-weight: 600;
 }
 
 .badge-primary {
-    -fx-background-color: #E8F8F5;
-    -fx-text-fill: #27AE60;
+    -fx-background-color: #EBF5FB;
+    -fx-text-fill: #1A5276;
 }
 
 .badge-secondary {
-    -fx-background-color: #EBF5FB;
-    -fx-text-fill: #3498DB;
+    -fx-background-color: #D6EAF8;
+    -fx-text-fill: #154360;
 }
 
 .badge-danger {
     -fx-background-color: #FADBD8;
-    -fx-text-fill: #E74C3C;
+    -fx-text-fill: #922B21;
 }
 
 .badge-warning {
-    -fx-background-color: #FEF5E7;
-    -fx-text-fill: #F39C12;
+    -fx-background-color: #FCF3CF;
+    -fx-text-fill: #7D6608;
 }
 
 .badge-success {
-    -fx-background-color: #E8F8F5;
-    -fx-text-fill: #27AE60;
+    -fx-background-color: #D5F4E6;
+    -fx-text-fill: #0B5345;
 }
 
-.badge-inactive {
-    -fx-background-color: #FADBD8;
-    -fx-text-fill: #E74C3C;
-}
-
-.badge-admin {
-    -fx-background-color: #F4ECF7;
-    -fx-text-fill: #8E44AD;
-}
-
-.badge-employee {
+.badge-info {
     -fx-background-color: #EBF5FB;
-    -fx-text-fill: #3498DB;
+    -fx-text-fill: #1A5276;
 }
 
 /* =====================================================
@@ -330,25 +335,21 @@
     -fx-background-color: #3498DB;
     -fx-text-fill: #ffffff;
     -fx-font-weight: 700;
-    -fx-font-size: 10pt;
+    -fx-font-size: 11pt;
     -fx-padding: 8;
     -fx-border-radius: 50;
-    -fx-min-width: 32;
-    -fx-min-height: 32;
-    -fx-pref-width: 32;
-    -fx-pref-height: 32;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-pref-width: 36;
+    -fx-pref-height: 36;
 }
 
 .avatar-blue {
     -fx-background-color: #3498DB;
 }
 
-.avatar-green {
-    -fx-background-color: #27AE60;
-}
-
-.avatar-orange {
-    -fx-background-color: #F39C12;
+.avatar-cyan {
+    -fx-background-color: #1ABC9C;
 }
 
 .avatar-purple {
@@ -359,8 +360,8 @@
     -fx-background-color: #E84E89;
 }
 
-.avatar-cyan {
-    -fx-background-color: #1ABC9C;
+.avatar-orange {
+    -fx-background-color: #F39C12;
 }
 
 /* =====================================================
@@ -368,15 +369,18 @@
    ===================================================== */
 
 .metric-card {
-    -fx-background-color: #ECF0F1;
-    -fx-padding: 12;
+    -fx-background-color: #ffffff;
+    -fx-padding: 16;
     -fx-border-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 2);
+    -fx-border-color: #EBF5FB;
+    -fx-border-width: 1;
 }
 
 .metric-value {
-    -fx-font-size: 24pt;
+    -fx-font-size: 28pt;
     -fx-font-weight: bold;
-    -fx-text-fill: #2C3E50;
+    -fx-text-fill: #1A5276;
 }
 
 .metric-label {
@@ -386,7 +390,7 @@
 }
 
 /* =====================================================
-   DIÁLOGOS Y MODALES
+   DIÁLOGOS Y MODALES - TEMA AZUL
    ===================================================== */
 
 .dialog-pane {
@@ -395,41 +399,42 @@
 
 .dialog-pane .header-panel {
     -fx-background-color: #2C3E50;
-    -fx-padding: 12 12 12 12;
+    -fx-padding: 14 14 14 14;
 }
 
 .dialog-pane .title {
     -fx-text-fill: #ffffff;
-    -fx-font-size: 12pt;
+    -fx-font-size: 13pt;
     -fx-font-weight: bold;
 }
 
 .dialog-pane .content {
-    -fx-padding: 12;
+    -fx-padding: 14;
     -fx-background-color: #ffffff;
 }
 
 .dialog-pane .button-bar {
-    -fx-padding: 12 12 12 12;
-    -fx-background-color: #ECF0F1;
-    -fx-border-color: #BDC3C7;
+    -fx-padding: 12 14 12 14;
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 1 0 0 0;
 }
 
 /* =====================================================
-   BARRA DE HERRAMIENTAS
+   BARRA DE HERRAMIENTAS - TEMA AZUL
    ===================================================== */
 
 .toolbar {
-    -fx-background-color: #ECF0F1;
-    -fx-padding: 8 12 8 12;
-    -fx-border-color: #BDC3C7;
+    -fx-background-color: #ffffff;
+    -fx-padding: 10 14 10 14;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 0 0 1 0;
-    -fx-spacing: 8;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 2, 0, 0, 1);
 }
 
 .toolbar .button {
-    -fx-padding: 6 10 6 10;
+    -fx-padding: 7 12 7 12;
 }
 
 .action-button {
@@ -437,12 +442,12 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-text-fill: #7F8C8D;
-    -fx-font-size: 12pt;
+    -fx-font-size: 13pt;
     -fx-transition: all 0.2s ease;
 }
 
 .action-button:hover {
-    -fx-text-fill: #27AE60;
+    -fx-text-fill: #3498DB;
     -fx-scale-x: 1.2;
     -fx-scale-y: 1.2;
 }
@@ -454,17 +459,18 @@
 }
 
 /* =====================================================
-   ENCABEZADO
+   ENCABEZADO - MEJORADO
    ===================================================== */
 
 .header {
     -fx-background-color: #2C3E50;
-    -fx-padding: 10 12 10 12;
+    -fx-padding: 12 14 12 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 2);
 }
 
 .header .label {
     -fx-text-fill: #ffffff;
-    -fx-font-size: 12pt;
+    -fx-font-size: 13pt;
     -fx-font-weight: bold;
 }
 
@@ -482,11 +488,11 @@
 }
 
 .menu:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-color: rgba(52,152,219,0.15);
 }
 
 .menu-item:focused {
-    -fx-background-color: #27AE60;
+    -fx-background-color: #3498DB;
 }
 
 .menu-item:focused .label {
@@ -494,16 +500,16 @@
 }
 
 /* =====================================================
-   PESTAÑAS
+   PESTAÑAS - TEMA AZUL
    ===================================================== */
 
 .tab-pane .tab-header-background {
-    -fx-background-color: #ECF0F1;
+    -fx-background-color: #f8f9fa;
 }
 
 .tab {
-    -fx-background-color: #ECF0F1;
-    -fx-padding: 8;
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 10;
     -fx-transition: all 0.2s ease;
 }
 
@@ -511,7 +517,6 @@
     -fx-text-fill: #7F8C8D;
     -fx-font-size: 10pt;
     -fx-font-weight: 500;
-    -fx-transition: all 0.2s ease;
 }
 
 .tab:selected {
@@ -519,7 +524,7 @@
 }
 
 .tab:selected .tab-label {
-    -fx-text-fill: #27AE60;
+    -fx-text-fill: #3498DB;
     -fx-font-weight: bold;
 }
 
@@ -528,11 +533,11 @@
    ===================================================== */
 
 .filter-section {
-    -fx-background-color: #ECF0F1;
-    -fx-padding: 8;
-    -fx-border-color: #BDC3C7;
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 10;
+    -fx-border-color: #D5DBDB;
     -fx-border-width: 0 0 1 0;
-    -fx-spacing: 8;
+    -fx-spacing: 10;
 }
 
 .filter-section .label {
@@ -545,7 +550,7 @@
    ===================================================== */
 
 .pagination {
-    -fx-padding: 8;
+    -fx-padding: 10;
 }
 
 .pagination .page-information {
@@ -554,76 +559,53 @@
 }
 
 .pagination .pagination-button {
-    -fx-padding: 4 8 4 8;
-    -fx-min-width: 28;
-    -fx-min-height: 28;
+    -fx-padding: 5 10 5 10;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
     -fx-font-size: 10pt;
+    -fx-transition: all 0.2s ease;
 }
 
 .pagination .pagination-button:selected {
-    -fx-background-color: #27AE60;
+    -fx-background-color: #3498DB;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
 }
 
 /* =====================================================
-   MODO FOCUS
-   ===================================================== */
-
-.focus-mode-card {
-    -fx-background-color: #27AE60;
-    -fx-padding: 12;
-}
-
-.focus-mode-card .label {
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
-}
-
-.focus-mode-button {
-    -fx-background-color: #1d7d47;
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: 600;
-}
-
-.focus-mode-button:hover {
-    -fx-background-color: #229954;
-}
-
-/* =====================================================
-   CAJAS DE INFORMACIÓN
+   CAJAS DE INFORMACIÓN - MEJORADO
    ===================================================== */
 
 .info-box {
     -fx-background-color: #EBF5FB;
     -fx-border-color: #AED6F1;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-padding: 8;
+    -fx-border-radius: 6;
+    -fx-padding: 10;
 }
 
 .success-box {
-    -fx-background-color: #E8F8F5;
+    -fx-background-color: #D5F4E6;
     -fx-border-color: #A3E4D7;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-padding: 8;
+    -fx-border-radius: 6;
+    -fx-padding: 10;
 }
 
 .warning-box {
-    -fx-background-color: #FEF5E7;
+    -fx-background-color: #FCF3CF;
     -fx-border-color: #F8D7A1;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-padding: 8;
+    -fx-border-radius: 6;
+    -fx-padding: 10;
 }
 
 .error-box {
     -fx-background-color: #FADBD8;
     -fx-border-color: #F1948A;
     -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-padding: 8;
+    -fx-border-radius: 6;
+    -fx-padding: 10;
 }
 
 /* =====================================================
