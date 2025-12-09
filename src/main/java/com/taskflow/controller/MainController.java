@@ -496,7 +496,8 @@ public class MainController implements Initializable {
                 });
 
                 btnAsignaciones.setOnAction(event -> {
-                    handleAsignaciones();
+                    Tarea tarea = getTableView().getItems().get(getIndex());
+                    handleAsignaciones(tarea);
                 });
             }
 
@@ -623,9 +624,26 @@ public class MainController implements Initializable {
         ViewManager.getInstance().openModalFxml("/fxml/ModalNuevaTarea.fxml", "Nueva Tarea", 700, 600);
     }
 
-    @FXML
-    void handleAsignaciones() {
-        ViewManager.getInstance().openModalFxml("/fxml/ModalAsignaciones.fxml", "Asignaciones", 800, 600);
+    void handleAsignaciones(Tarea tarea) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/fxml/ModalAsignaciones.fxml")
+            );
+            javafx.scene.layout.Pane content = loader.load();
+
+            // Obtener el controlador y configurarlo con la tarea seleccionada
+            ModalAsignacionesController controller = loader.getController();
+            controller.setTarea(tarea);
+
+            // Abrir modal
+            ViewManager.getInstance().openModal("Asignaciones", content, 800, 600);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("No se pudo abrir el formulario de asignaciones");
+            alert.showAndWait();
+        }
     }
 
     void handleEditarUsuario(Usuario usuario) {

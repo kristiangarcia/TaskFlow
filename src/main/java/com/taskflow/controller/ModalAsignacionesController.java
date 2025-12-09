@@ -70,6 +70,7 @@ public class ModalAsignacionesController implements Initializable {
     private DataManager dataManager;
     private ObservableList<Asignacion> asignaciones;
     private Asignacion asignacionEditar; // null si es nueva, contiene la asignación si es edición
+    private Tarea tareaActual; // Almacena la tarea seleccionada
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,8 +83,20 @@ public class ModalAsignacionesController implements Initializable {
 
         // Configurar columnas de TableView
         setupTableColumns();
+    }
 
-        // Cargar asignaciones de ejemplo (filtrar aquellas con tareaId = 1)
+    /**
+     * Establece la tarea actual y carga sus asignaciones
+     */
+    public void setTarea(Tarea tarea) {
+        this.tareaActual = tarea;
+
+        // Mostrar información de la tarea en los labels
+        lblTareaTitulo.setText(tarea.getTitulo());
+        lblTareaInfo.setText("ID: " + tarea.getIdTarea() + " | Categoría: " + tarea.getProyectoCategoria() +
+                           " | Prioridad: " + tarea.getPrioridad());
+
+        // Cargar asignaciones de la tarea actual
         loadAsignaciones();
 
         // Actualizar etiquetas de resumen
@@ -184,8 +197,17 @@ public class ModalAsignacionesController implements Initializable {
     }
 
     private void loadAsignaciones() {
-        // Cargar asignaciones desde la base de datos
-        asignaciones = FXCollections.observableArrayList(dataManager.getAsignaciones());
+        if (tareaActual == null) {
+            return;
+        }
+
+        // Cargar asignaciones de la tarea actual filtrando por tareaId
+        java.util.List<Asignacion> todasAsignaciones = dataManager.getAsignaciones();
+        java.util.List<Asignacion> asignacionesFiltradas = todasAsignaciones.stream()
+            .filter(a -> a.getTareaId() == tareaActual.getIdTarea())
+            .collect(java.util.stream.Collectors.toList());
+
+        asignaciones = FXCollections.observableArrayList(asignacionesFiltradas);
         tableAsignaciones.setItems(asignaciones);
     }
 
@@ -230,8 +252,8 @@ public class ModalAsignacionesController implements Initializable {
             return;
         }
 
-        // Crear nueva asignación (tareaId hardcoded como 1 por ahora - esto se debería pasar dinámicamente)
-        Asignacion nuevaAsignacion = new Asignacion(0, 1, usuario.getIdUsuario(), rol, horas, false);
+        // Crear nueva asignación con la tarea actual
+        Asignacion nuevaAsignacion = new Asignacion(0, tareaActual.getIdTarea(), usuario.getIdUsuario(), rol, horas, false);
 
         if (dataManager.insertarAsignacion(nuevaAsignacion)) {
             loadAsignaciones();
