@@ -440,7 +440,7 @@ public class MainController implements Initializable {
         colPrioridadTareas.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
         colEstadoTareas.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        // Fábrica de celdas personalizada para colAsignadosTareas (contador)
+        // Fábrica de celdas personalizada para colAsignadosTareas (contador de asignaciones reales)
         colAsignadosTareas.setCellFactory(column -> new TableCell<Tarea, Void>() {
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -448,9 +448,14 @@ public class MainController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    // Por ahora, mostrar contador aleatorio (0-3) como marcador de posición
-                    // En implementación real, esto consultaría DataManager para asignaciones
-                    int count = (int) (Math.random() * 4);
+                    // Obtener la tarea actual
+                    Tarea tarea = getTableView().getItems().get(getIndex());
+
+                    // Contar asignaciones reales de esta tarea
+                    int count = (int) dataManager.getAsignaciones().stream()
+                        .filter(a -> a.getTareaId() == tarea.getIdTarea())
+                        .count();
+
                     setText(String.valueOf(count));
                 }
             }
