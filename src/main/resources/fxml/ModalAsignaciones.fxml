@@ -36,7 +36,7 @@
     <!-- Botón para añadir -->
     <Button fx:id="btnAnadirAsignacion" text=" Añadir asignación" onAction="#handleAnadirAsignacion">
         <graphic>
-            <FontAwesomeIconView glyphName="PLUS" size="14px" style="-fx-fill: #3498DB;"/>
+            <FontAwesomeIconView glyphName="PLUS" size="14px"/>
         </graphic>
     </Button>
 
