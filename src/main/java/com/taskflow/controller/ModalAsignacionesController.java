@@ -81,14 +81,14 @@ public class ModalAsignacionesController implements Initializable {
             comboUsuario.getItems().add(usuario.getNombreCompleto());
         }
 
-        // Poblar comboRol con roles válidos
+        // Poblar comboRol con roles válidos (deben coincidir con el constraint de la BD)
         comboRol.getItems().addAll(
-            "Desarrollador",
-            "Diseñador",
-            "Gerente",
-            "Revisor",
-            "Tester",
-            "Documentador"
+            "desarrollador",
+            "diseñador",
+            "gerente",
+            "revisor",
+            "tester",
+            "documentador"
         );
 
         // Configurar columnas de TableView
