@@ -238,6 +238,11 @@
     -fx-background-color: #34495E;
 }
 
+.table-view .column-header .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
 .table-view .table-cell {
     -fx-padding: 10 8 10 8;
     -fx-text-fill: #2C3E50;
