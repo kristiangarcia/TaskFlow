@@ -1,0 +1,651 @@
+/* =====================================================
+   TASKFLOW - Hoja de estilos CSS
+   Basado en mockups de interfaz de usuario
+   ===================================================== */
+
+/* Paleta de colores */
+:root {
+    -fx-color-primary: #27AE60;
+    -fx-color-dark: #2C3E50;
+    -fx-color-surface: #ECF0F1;
+    -fx-color-text: #2C3E50;
+    -fx-color-text-subtle: #7F8C8D;
+    -fx-color-border: #BDC3C7;
+    -fx-color-danger: #E74C3C;
+    -fx-color-warning: #F39C12;
+    -fx-color-info: #3498DB;
+}
+
+/* Estilos globales */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 10pt;
+    -fx-base: #ffffff;
+    -fx-background-color: #ffffff;
+    -fx-control-inner-background: #ffffff;
+    -fx-text-fill: #2C3E50;
+}
+
+/* Transiciones globales suaves */
+* {
+    -fx-transition: all 0.2s ease;
+}
+
+/* =====================================================
+   BOTONES
+   ===================================================== */
+
+.button {
+    -fx-padding: 6 12 6 12;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 10pt;
+    -fx-font-weight: 500;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.button:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:pressed {
+    -fx-background-color: #e0e0e0;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.button-primary {
+    -fx-background-color: #27AE60;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #27AE60;
+    -fx-font-weight: 600;
+    -fx-transition: all 0.3s ease;
+}
+
+.button-primary:hover {
+    -fx-background-color: #229954;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #1d7d47;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.button-danger {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #E74C3C;
+}
+
+.button-danger:hover {
+    -fx-background-color: #C0392B;
+}
+
+/* =====================================================
+   CAMPOS DE ENTRADA
+   ===================================================== */
+
+.text-field, .password-field, .text-area {
+    -fx-font-size: 10pt;
+    -fx-padding: 6 8 6 8;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2C3E50;
+    -fx-control-inner-background: #ffffff;
+    -fx-prompt-text-fill: #7F8C8D;
+    -fx-transition: all 0.2s ease;
+}
+
+.text-field:focused, .password-field:focused, .text-area:focused {
+    -fx-border-color: #27AE60;
+    -fx-border-width: 2;
+    -fx-background-color: #f9fffa;
+}
+
+.text-field:disabled, .password-field:disabled, .text-area:disabled {
+    -fx-opacity: 0.6;
+    -fx-background-color: #f5f5f5;
+}
+
+/* =====================================================
+   COMBO BOX Y SELECTORES
+   ===================================================== */
+
+.combo-box, .choice-box {
+    -fx-font-size: 10pt;
+    -fx-padding: 6 8 6 8;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2C3E50;
+    -fx-transition: all 0.2s ease;
+}
+
+.combo-box:focused, .choice-box:focused {
+    -fx-border-color: #27AE60;
+    -fx-border-width: 2;
+    -fx-background-color: #f9fffa;
+}
+
+.combo-box-popup .list-cell:filled:selected,
+.combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: #27AE60;
+    -fx-text-fill: #ffffff;
+}
+
+/* =====================================================
+   CHECKBOX
+   ===================================================== */
+
+.check-box {
+    -fx-font-size: 10pt;
+    -fx-text-fill: #2C3E50;
+}
+
+.check-box .box {
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 1;
+    -fx-padding: 3;
+    -fx-border-radius: 3;
+    -fx-background-color: #ffffff;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #27AE60;
+    -fx-border-color: #27AE60;
+}
+
+/* =====================================================
+   ETIQUETAS
+   ===================================================== */
+
+.label {
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 10pt;
+}
+
+.label-header {
+    -fx-font-size: 14pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+}
+
+.label-title {
+    -fx-font-size: 16pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+}
+
+.label-subtle {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 9pt;
+}
+
+/* =====================================================
+   TABLAS
+   ===================================================== */
+
+.table-view {
+    -fx-table-cell-border-color: #e8e8e8;
+    -fx-table-header-border-color: #2C3E50;
+    -fx-font-size: 10pt;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #2C3E50;
+    -fx-border-color: #2C3E50;
+}
+
+.table-view .column-header {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 10pt;
+    -fx-padding: 8 6 8 6;
+    -fx-background-color: #2C3E50;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-cell {
+    -fx-padding: 8 6 8 6;
+    -fx-text-fill: #2C3E50;
+    -fx-border-color: #e8e8e8;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-cell-size: 40;
+    -fx-transition: all 0.2s ease;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #f8f8f8;
+    -fx-scale-x: 1.01;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #E8F8F5;
+}
+
+/* =====================================================
+   BARRAS DE DESPLAZAMIENTO
+   ===================================================== */
+
+.scroll-bar {
+    -fx-background-color: #f5f5f5;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #BDC3C7;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #a9a9a9;
+}
+
+/* =====================================================
+   SEPARADORES
+   ===================================================== */
+
+.separator {
+    -fx-border-color: #BDC3C7;
+}
+
+/* =====================================================
+   BADGES Y ETIQUETAS DE ESTADO
+   ===================================================== */
+
+.badge {
+    -fx-padding: 3 6 3 6;
+    -fx-border-radius: 12;
+    -fx-font-size: 8pt;
+    -fx-font-weight: 600;
+}
+
+.badge-primary {
+    -fx-background-color: #E8F8F5;
+    -fx-text-fill: #27AE60;
+}
+
+.badge-secondary {
+    -fx-background-color: #EBF5FB;
+    -fx-text-fill: #3498DB;
+}
+
+.badge-danger {
+    -fx-background-color: #FADBD8;
+    -fx-text-fill: #E74C3C;
+}
+
+.badge-warning {
+    -fx-background-color: #FEF5E7;
+    -fx-text-fill: #F39C12;
+}
+
+.badge-success {
+    -fx-background-color: #E8F8F5;
+    -fx-text-fill: #27AE60;
+}
+
+.badge-inactive {
+    -fx-background-color: #FADBD8;
+    -fx-text-fill: #E74C3C;
+}
+
+.badge-admin {
+    -fx-background-color: #F4ECF7;
+    -fx-text-fill: #8E44AD;
+}
+
+.badge-employee {
+    -fx-background-color: #EBF5FB;
+    -fx-text-fill: #3498DB;
+}
+
+/* =====================================================
+   AVATARES CIRCULARES
+   ===================================================== */
+
+.avatar {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 700;
+    -fx-font-size: 10pt;
+    -fx-padding: 8;
+    -fx-border-radius: 50;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-pref-width: 32;
+    -fx-pref-height: 32;
+}
+
+.avatar-blue {
+    -fx-background-color: #3498DB;
+}
+
+.avatar-green {
+    -fx-background-color: #27AE60;
+}
+
+.avatar-orange {
+    -fx-background-color: #F39C12;
+}
+
+.avatar-purple {
+    -fx-background-color: #9B59B6;
+}
+
+.avatar-pink {
+    -fx-background-color: #E84E89;
+}
+
+.avatar-cyan {
+    -fx-background-color: #1ABC9C;
+}
+
+/* =====================================================
+   TARJETAS DE MÉTRICAS
+   ===================================================== */
+
+.metric-card {
+    -fx-background-color: #ECF0F1;
+    -fx-padding: 12;
+    -fx-border-radius: 8;
+}
+
+.metric-value {
+    -fx-font-size: 24pt;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+}
+
+.metric-label {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #7F8C8D;
+    -fx-font-weight: 500;
+}
+
+/* =====================================================
+   DIÁLOGOS Y MODALES
+   ===================================================== */
+
+.dialog-pane {
+    -fx-background-color: #ffffff;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #2C3E50;
+    -fx-padding: 12 12 12 12;
+}
+
+.dialog-pane .title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .content {
+    -fx-padding: 12;
+    -fx-background-color: #ffffff;
+}
+
+.dialog-pane .button-bar {
+    -fx-padding: 12 12 12 12;
+    -fx-background-color: #ECF0F1;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* =====================================================
+   BARRA DE HERRAMIENTAS
+   ===================================================== */
+
+.toolbar {
+    -fx-background-color: #ECF0F1;
+    -fx-padding: 8 12 8 12;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 0 0 1 0;
+    -fx-spacing: 8;
+}
+
+.toolbar .button {
+    -fx-padding: 6 10 6 10;
+}
+
+.action-button {
+    -fx-padding: 6;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 12pt;
+    -fx-transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    -fx-text-fill: #27AE60;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.action-button-danger:hover {
+    -fx-text-fill: #E74C3C;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+/* =====================================================
+   ENCABEZADO
+   ===================================================== */
+
+.header {
+    -fx-background-color: #2C3E50;
+    -fx-padding: 10 12 10 12;
+}
+
+.header .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+}
+
+/* =====================================================
+   MENÚ
+   ===================================================== */
+
+.menu-bar {
+    -fx-background-color: #2C3E50;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 10pt;
+}
+
+.menu:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-item:focused {
+    -fx-background-color: #27AE60;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+}
+
+/* =====================================================
+   PESTAÑAS
+   ===================================================== */
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #ECF0F1;
+}
+
+.tab {
+    -fx-background-color: #ECF0F1;
+    -fx-padding: 8;
+    -fx-transition: all 0.2s ease;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 10pt;
+    -fx-font-weight: 500;
+    -fx-transition: all 0.2s ease;
+}
+
+.tab:selected {
+    -fx-background-color: #ffffff;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #27AE60;
+    -fx-font-weight: bold;
+}
+
+/* =====================================================
+   SECCIONES DE FILTRO
+   ===================================================== */
+
+.filter-section {
+    -fx-background-color: #ECF0F1;
+    -fx-padding: 8;
+    -fx-border-color: #BDC3C7;
+    -fx-border-width: 0 0 1 0;
+    -fx-spacing: 8;
+}
+
+.filter-section .label {
+    -fx-text-fill: #2C3E50;
+    -fx-font-weight: 500;
+}
+
+/* =====================================================
+   PAGINACIÓN
+   ===================================================== */
+
+.pagination {
+    -fx-padding: 8;
+}
+
+.pagination .page-information {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-size: 9pt;
+}
+
+.pagination .pagination-button {
+    -fx-padding: 4 8 4 8;
+    -fx-min-width: 28;
+    -fx-min-height: 28;
+    -fx-font-size: 10pt;
+}
+
+.pagination .pagination-button:selected {
+    -fx-background-color: #27AE60;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* =====================================================
+   MODO FOCUS
+   ===================================================== */
+
+.focus-mode-card {
+    -fx-background-color: #27AE60;
+    -fx-padding: 12;
+}
+
+.focus-mode-card .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.focus-mode-button {
+    -fx-background-color: #1d7d47;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 600;
+}
+
+.focus-mode-button:hover {
+    -fx-background-color: #229954;
+}
+
+/* =====================================================
+   CAJAS DE INFORMACIÓN
+   ===================================================== */
+
+.info-box {
+    -fx-background-color: #EBF5FB;
+    -fx-border-color: #AED6F1;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+}
+
+.success-box {
+    -fx-background-color: #E8F8F5;
+    -fx-border-color: #A3E4D7;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+}
+
+.warning-box {
+    -fx-background-color: #FEF5E7;
+    -fx-border-color: #F8D7A1;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+}
+
+.error-box {
+    -fx-background-color: #FADBD8;
+    -fx-border-color: #F1948A;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-padding: 8;
+}
+
+/* =====================================================
+   ANIMACIONES
+   ===================================================== */
+
+.fade-in {
+    -fx-opacity: 1;
+    -fx-transition: opacity 0.5s ease;
+}
+
+.fade-out {
+    -fx-opacity: 0;
+    -fx-transition: opacity 0.5s ease;
+}
+
+.slide-in {
+    -fx-translate-x: 0;
+    -fx-transition: translate-x 0.3s ease;
+}
+
+.slide-out {
+    -fx-translate-x: 100;
+    -fx-transition: translate-x 0.3s ease;
+}

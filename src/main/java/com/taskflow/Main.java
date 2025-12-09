@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.net.URL;
+
 import static com.taskflow.util.Constants.*;
 
 /**
@@ -30,6 +32,17 @@ public class Main extends Application {
 
             // Crear y mostrar la escena
             Scene scene = new Scene(root, 400, 600);
+
+            // Cargar CSS si está disponible
+            try {
+                URL cssResource = getClass().getResource("/styles.css");
+                if (cssResource != null) {
+                    scene.getStylesheets().add(cssResource.toExternalForm());
+                }
+            } catch (Exception e) {
+                System.out.println("CSS no encontrado, continuando sin estilos");
+            }
+
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.centerOnScreen();

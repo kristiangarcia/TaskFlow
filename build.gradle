@@ -56,7 +56,7 @@ sourceSets {
     main {
         resources {
             srcDirs = ["src/main/resources"]
-            includes = ["**/*.fxml", "**/*.png", "**/*.jpg", "**/*.properties"]
+            includes = ["**/*.fxml", "**/*.png", "**/*.jpg", "**/*.properties", "**/*.css"]
         }
     }
 }

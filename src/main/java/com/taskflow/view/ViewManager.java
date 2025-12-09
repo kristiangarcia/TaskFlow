@@ -1,13 +1,17 @@
 package com.taskflow.view;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Gestor de vistas y navegación de la aplicación usando FXML
@@ -59,12 +63,13 @@ public class ViewManager {
     }
 
     /**
-     * Cambia el contenido de la vista principal
+     * Cambia el contenido de la vista principal con animación
      */
     public void setContent(Pane newContent) {
         if (currentContentPane != null) {
             currentContentPane.getChildren().clear();
             currentContentPane.getChildren().add(newContent);
+            animarEntrada(newContent);
         }
     }
 
@@ -82,6 +87,68 @@ public class ViewManager {
             System.err.println("Error cargando vista FXML: " + fxmlPath);
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Carga CSS en una escena
+     */
+    private void cargarCSS(Scene scene) {
+        try {
+            URL cssResource = getClass().getResource("/styles.css");
+            if (cssResource != null) {
+                scene.getStylesheets().add(cssResource.toExternalForm());
+            }
+        } catch (Exception e) {
+            // CSS no disponible, continuar sin estilos
+        }
+    }
+
+    /**
+     * Anima un Pane con una animación de fade in y escala suave
+     */
+    private void animarEntrada(Pane pane) {
+        // Inicializar valores
+        pane.setOpacity(0);
+        pane.setScaleX(0.95);
+        pane.setScaleY(0.95);
+
+        // Animación de fade in
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(400), pane);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        // Animación de escala
+        ScaleTransition scale = new ScaleTransition(Duration.millis(400), pane);
+        scale.setFromX(0.95);
+        scale.setFromY(0.95);
+        scale.setToX(1);
+        scale.setToY(1);
+
+        // Ejecutar animaciones en paralelo
+        fadeIn.play();
+        scale.play();
+    }
+
+    /**
+     * Anima un Stage (modal) con entrada suave
+     */
+    private void animarModalEntrada(Stage stage) {
+        stage.setOpacity(0);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), stage.getScene().getRoot());
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+
+        ScaleTransition scale = new ScaleTransition(Duration.millis(300), stage.getScene().getRoot());
+        scale.setFromX(0.9);
+        scale.setFromY(0.9);
+        scale.setToX(1);
+        scale.setToY(1);
+        scale.play();
+
+        // Hacer visible después de una pequeña pausa
+        stage.setOpacity(1);
     }
 
     /**
@@ -104,6 +171,7 @@ public class ViewManager {
             modalStage.initOwner(primaryStage);
 
             Scene scene = new Scene(content, width, height);
+            cargarCSS(scene);
             modalStage.setScene(scene);
 
             // Centrar respecto a la ventana principal
@@ -113,6 +181,7 @@ public class ViewManager {
             }
 
             modalStage.show();
+            animarModalEntrada(modalStage);
             return modalStage;
         } catch (IOException e) {
             System.err.println("Error cargando modal FXML: " + fxmlPath);
@@ -144,6 +213,7 @@ public class ViewManager {
         modalStage.initOwner(primaryStage);
 
         Scene scene = new Scene(content, width, height);
+        cargarCSS(scene);
         modalStage.setScene(scene);
 
         // Centrar respecto a la ventana principal
@@ -153,6 +223,7 @@ public class ViewManager {
         }
 
         modalStage.show();
+        animarModalEntrada(modalStage);
         return modalStage;
     }
 
@@ -171,10 +242,14 @@ public class ViewManager {
         Pane root = loader.load();
 
         Scene scene = new Scene(root, width, height);
+        cargarCSS(scene);
         primaryStage.setScene(scene);
         primaryStage.setTitle(titulo);
         primaryStage.setResizable(true);
         primaryStage.centerOnScreen();
+
+        // Animar la entrada de la nueva vista
+        animarEntrada(root);
     }
 
     /**
