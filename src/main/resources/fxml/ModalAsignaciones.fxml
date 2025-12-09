@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <VBox spacing="15" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.taskflow.controller.ModalAsignacionesController">
 
@@ -33,7 +34,11 @@
     </GridPane>
 
     <!-- Botón para añadir -->
-    <Button fx:id="btnAnadirAsignacion" text="Añadir asignación" onAction="#handleAnadirAsignacion" />
+    <Button fx:id="btnAnadirAsignacion" text=" Añadir asignación" onAction="#handleAnadirAsignacion">
+        <graphic>
+            <FontAwesomeIconView glyphName="PLUS" size="14px" style="-fx-fill: #3498DB;"/>
+        </graphic>
+    </Button>
 
     <!-- Separador -->
     <Separator />
@@ -61,7 +66,11 @@
 
     <!-- Barra de botones -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="btnCerrar" text="Cerrar" onAction="#handleCerrar" />
+        <Button fx:id="btnCerrar" text=" Cerrar" onAction="#handleCerrar">
+            <graphic>
+                <FontAwesomeIconView glyphName="TIMES" size="14px"/>
+            </graphic>
+        </Button>
     </HBox>
 
 </VBox>

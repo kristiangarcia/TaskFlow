@@ -636,3 +636,109 @@
     -fx-translate-x: 100;
     -fx-transition: translate-x 0.3s ease;
 }
+
+/* =====================================================
+   BOTONES DE ENCABEZADO (Usuario, Tarea)
+   ===================================================== */
+
+.btn-header {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: white;
+    -fx-padding: 8 14 8 14;
+    -fx-font-weight: 500;
+    -fx-border-width: 0;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+.btn-header:hover {
+    -fx-background-color: #2980B9;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0, 0, 2);
+}
+
+.btn-header:pressed {
+    -fx-background-color: #1F618D;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 2, 0, 0, 1);
+}
+
+/* =====================================================
+   BOTONES DE ACCIÓN EN TABLAS
+   ===================================================== */
+
+.btn-action {
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 9pt;
+    -fx-font-weight: 500;
+    -fx-text-fill: white;
+    -fx-border-width: 0;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+.btn-action:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 4, 0, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-action:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 2, 0, 0, 1);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* Botón Editar */
+.btn-edit {
+    -fx-background-color: #3498DB;
+}
+
+.btn-edit:hover {
+    -fx-background-color: #2980B9;
+}
+
+.btn-edit:pressed {
+    -fx-background-color: #1F618D;
+}
+
+/* Botón Eliminar */
+.btn-delete {
+    -fx-background-color: #E74C3C;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #C0392B;
+}
+
+.btn-delete:pressed {
+    -fx-background-color: #A93226;
+}
+
+/* Botón Asignar */
+.btn-assign {
+    -fx-background-color: #27AE60;
+}
+
+.btn-assign:hover {
+    -fx-background-color: #229954;
+}
+
+.btn-assign:pressed {
+    -fx-background-color: #1E8449;
+}
+
+/* Botón Play/Iniciar */
+.btn-play {
+    -fx-background-color: #27AE60;
+}
+
+.btn-play:hover {
+    -fx-background-color: #229954;
+}
+
+.btn-play:pressed {
+    -fx-background-color: #1E8449;
+}

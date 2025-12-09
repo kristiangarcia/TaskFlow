@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <VBox spacing="15" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.taskflow.controller.ModalNuevaTareaController">
 
@@ -50,8 +51,16 @@
 
     <!-- Barra de botones -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="btnCancelar" text="Cancelar" onAction="#handleCancelar" />
-        <Button fx:id="btnGuardar" text="Guardar" onAction="#handleGuardar" />
+        <Button fx:id="btnCancelar" text=" Cancelar" onAction="#handleCancelar">
+            <graphic>
+                <FontAwesomeIconView glyphName="TIMES" size="14px"/>
+            </graphic>
+        </Button>
+        <Button fx:id="btnGuardar" text=" Guardar" onAction="#handleGuardar" style="-fx-text-fill: white; -fx-background-color: #3498DB;">
+            <graphic>
+                <FontAwesomeIconView glyphName="SAVE" size="14px"/>
+            </graphic>
+        </Button>
     </HBox>
 
 </VBox>

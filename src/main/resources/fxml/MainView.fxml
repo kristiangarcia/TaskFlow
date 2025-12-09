@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.chart.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -18,8 +19,16 @@
 
             <!-- Barra de herramientas clara -->
             <HBox spacing="10" style="-fx-background-color: #ECF0F1; -fx-padding: 10;">
-                <Button fx:id="btnNuevoUsuario" text="+ Usuario" onAction="#handleNuevoUsuario"/>
-                <Button fx:id="btnNuevaTarea" text="+ Tarea" onAction="#handleNuevaTarea"/>
+                <Button fx:id="btnNuevoUsuario" text=" Usuario" onAction="#handleNuevoUsuario" styleClass="btn-header">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="USER_PLUS" size="14px"/>
+                    </graphic>
+                </Button>
+                <Button fx:id="btnNuevaTarea" text=" Tarea" onAction="#handleNuevaTarea" styleClass="btn-header">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="PLUS_CIRCLE" size="14px"/>
+                    </graphic>
+                </Button>
             </HBox>
         </VBox>
     </top>

@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import com.taskflow.model.*;
 import com.taskflow.util.DataManager;
 import com.taskflow.view.ViewManager;
@@ -349,9 +350,26 @@ public class MainController implements Initializable {
 
         // Fábrica de celdas personalizada para colAccionesUsuarios con botones Editar y Eliminar
         colAccionesUsuarios.setCellFactory(column -> new TableCell<Usuario, Void>() {
-            private final Button btnEditar = new Button("Editar");
-            private final Button btnEliminar = new Button("Eliminar");
+            private final Button btnEditar = new Button();
+            private final Button btnEliminar = new Button();
             private final HBox pane = new HBox(5, btnEditar, btnEliminar);
+
+            {
+                // Configurar iconos
+                FontAwesomeIconView editIcon = new FontAwesomeIconView();
+                editIcon.setGlyphName("PENCIL");
+                editIcon.setSize("14");
+                btnEditar.setGraphic(editIcon);
+                btnEditar.getStyleClass().addAll("btn-action", "btn-edit");
+                btnEditar.setTooltip(new Tooltip("Editar"));
+
+                FontAwesomeIconView deleteIcon = new FontAwesomeIconView();
+                deleteIcon.setGlyphName("TRASH");
+                deleteIcon.setSize("14");
+                btnEliminar.setGraphic(deleteIcon);
+                btnEliminar.getStyleClass().addAll("btn-action", "btn-delete");
+                btnEliminar.setTooltip(new Tooltip("Eliminar"));
+            }
 
             {
                 btnEditar.setOnAction(event -> {
@@ -463,10 +481,34 @@ public class MainController implements Initializable {
 
         // Fábrica de celdas personalizada para colAccionesTareas con botones Editar, Eliminar y Asignaciones
         colAccionesTareas.setCellFactory(column -> new TableCell<Tarea, Void>() {
-            private final Button btnEditar = new Button("Editar");
-            private final Button btnEliminar = new Button("Eliminar");
-            private final Button btnAsignaciones = new Button("Asignaciones");
+            private final Button btnEditar = new Button();
+            private final Button btnEliminar = new Button();
+            private final Button btnAsignaciones = new Button();
             private final HBox pane = new HBox(5, btnEditar, btnEliminar, btnAsignaciones);
+
+            {
+                // Configurar iconos
+                FontAwesomeIconView editIcon = new FontAwesomeIconView();
+                editIcon.setGlyphName("PENCIL");
+                editIcon.setSize("14");
+                btnEditar.setGraphic(editIcon);
+                btnEditar.getStyleClass().addAll("btn-action", "btn-edit");
+                btnEditar.setTooltip(new Tooltip("Editar"));
+
+                FontAwesomeIconView deleteIcon = new FontAwesomeIconView();
+                deleteIcon.setGlyphName("TRASH");
+                deleteIcon.setSize("14");
+                btnEliminar.setGraphic(deleteIcon);
+                btnEliminar.getStyleClass().addAll("btn-action", "btn-delete");
+                btnEliminar.setTooltip(new Tooltip("Eliminar"));
+
+                FontAwesomeIconView assignIcon = new FontAwesomeIconView();
+                assignIcon.setGlyphName("USERS");
+                assignIcon.setSize("14");
+                btnAsignaciones.setGraphic(assignIcon);
+                btnAsignaciones.getStyleClass().addAll("btn-action", "btn-assign");
+                btnAsignaciones.setTooltip(new Tooltip("Asignaciones"));
+            }
 
             {
                 btnEditar.setOnAction(event -> {
@@ -555,9 +597,17 @@ public class MainController implements Initializable {
 
         // Fábrica de celdas personalizada para colAccionMisTareas (botón)
         colAccionMisTareas.setCellFactory(column -> new TableCell<Tarea, Void>() {
-            private final Button btnIniciar = new Button("Iniciar");
+            private final Button btnIniciar = new Button();
 
             {
+                // Configurar icono
+                FontAwesomeIconView playIcon = new FontAwesomeIconView();
+                playIcon.setGlyphName("PLAY");
+                playIcon.setSize("14");
+                btnIniciar.setGraphic(playIcon);
+                btnIniciar.getStyleClass().addAll("btn-action", "btn-play");
+                btnIniciar.setTooltip(new Tooltip("Iniciar"));
+
                 btnIniciar.setOnAction(event -> {
                     Tarea tarea = getTableView().getItems().get(getIndex());
                     // Actualizar sección de Modo Focus

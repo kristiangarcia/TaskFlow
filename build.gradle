@@ -19,6 +19,9 @@ dependencies {
 
     // ControlsFX para validación visual
     implementation 'org.controlsfx:controlsfx:11.2.1'
+
+    // FontAwesomeFX para iconos
+    implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
 }
 
 javafx {
