@@ -92,23 +92,40 @@ public class ModalAsignacionesController implements Initializable {
 
         // Hacer el ComboBox editable para que sea buscable
         comboUsuario.setEditable(true);
+        comboUsuario.setItems(usuariosFiltrados);
+
+        // Obtener el editor del ComboBox
+        TextField txtEditor = comboUsuario.getEditor();
 
         // Agregar listener al campo de texto del ComboBox
-        comboUsuario.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
-            usuariosFiltrados.setPredicate(usuario -> {
-                // Si el campo está vacío, mostrar todos los usuarios
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
+        txtEditor.textProperty().addListener((observable, oldValue, newValue) -> {
+            final String selected = comboUsuario.getSelectionModel().getSelectedItem();
 
-                String searchLower = newValue.toLowerCase();
-                // Buscar coincidencias en el nombre
-                return usuario.toLowerCase().contains(searchLower);
-            });
+            // Campo vacío: ocultar desplegable
+            if (newValue == null || newValue.trim().isEmpty()) {
+                usuariosFiltrados.setPredicate(p -> true);
+                comboUsuario.hide();
+                return;
+            }
+
+            // Si no hay selección o cambió el texto
+            if (selected == null || !selected.equals(newValue)) {
+                // Aplicar predicado de búsqueda (startsWith)
+                usuariosFiltrados.setPredicate(p -> p.toLowerCase().startsWith(newValue.toLowerCase().trim()));
+                comboUsuario.setVisibleRowCount(5);
+                comboUsuario.show();
+            } else {
+                // Si seleccionó algo, mostrar todo
+                usuariosFiltrados.setPredicate(p -> true);
+            }
         });
 
-        // Configurar los items del ComboBox con la lista filtrada
-        comboUsuario.setItems(usuariosFiltrados);
+        // Posicionar caret al final cuando se selecciona un item
+        comboUsuario.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                txtEditor.positionCaret(txtEditor.getText().length());
+            }
+        });
 
         // Poblar comboRol con roles válidos (según constraint de la BD)
         comboRol.getItems().addAll(

@@ -10,7 +10,7 @@
     <Label fx:id="lblTitulo" text="Nuevo Usuario" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
     <!-- Cuadrícula de formulario -->
-    <GridPane hgap="10" vgap="10">
+    <GridPane hgap="10" vgap="8">
         <!-- Fila 0: Foto -->
         <Label text="Foto" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <Button fx:id="btnSeleccionarFoto" text="Seleccionar foto..." GridPane.columnIndex="1" GridPane.rowIndex="0" />
@@ -41,7 +41,7 @@
 
         <!-- Fila 7: Notas -->
         <Label text="Notas" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-        <TextArea fx:id="txtNotas" prefRowCount="3" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+        <TextArea fx:id="txtNotas" prefRowCount="2" GridPane.columnIndex="1" GridPane.rowIndex="7" />
     </GridPane>
 
     <!-- Barra de botones -->

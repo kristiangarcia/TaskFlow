@@ -109,13 +109,28 @@
    CAMPOS DE ENTRADA - MEJORA VISUAL
    ===================================================== */
 
-.text-field, .password-field, .text-area {
+.text-field, .password-field {
     -fx-font-size: 10pt;
-    -fx-padding: 8 10 8 10;
+    -fx-padding: 5 8 5 8;
     -fx-border-color: #D5DBDB;
     -fx-border-width: 1;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #2C3E50;
+    -fx-control-inner-background: #ffffff;
+    -fx-prompt-text-fill: #95A5A6;
+    -fx-transition: all 0.2s ease;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 2, 0, 0, 1);
+}
+
+.text-area {
+    -fx-font-size: 10pt;
+    -fx-padding: 5 8 5 8;
+    -fx-border-color: #D5DBDB;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
     -fx-background-color: #ffffff;
     -fx-text-fill: #2C3E50;
     -fx-control-inner-background: #ffffff;
@@ -142,15 +157,51 @@
 
 .combo-box, .choice-box {
     -fx-font-size: 10pt;
-    -fx-padding: 8 10 8 10;
+    -fx-padding: 5 8 5 8;
     -fx-border-color: #D5DBDB;
     -fx-border-width: 1;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
     -fx-background-color: #ffffff;
     -fx-text-fill: #2C3E50;
     -fx-transition: all 0.2s ease;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 2, 0, 0, 1);
+}
+
+.combo-box:editable {
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-effect: none;
+}
+
+.combo-box:editable .text-field {
+    -fx-border-color: #D5DBDB;
+    -fx-border-width: 1;
+    -fx-padding: 5 8 5 8;
+}
+
+.combo-box:editable .text-field:focused {
+    -fx-border-color: #3498DB;
+    -fx-border-width: 2;
+}
+
+.date-picker {
+    -fx-font-size: 10pt;
+    -fx-padding: 5 8 5 8;
+    -fx-border-color: #D5DBDB;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: #ffffff;
+    -fx-transition: all 0.2s ease;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 2, 0, 0, 1);
+}
+
+.date-picker:focused {
+    -fx-border-color: #3498DB;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.15), 4, 0, 0, 2);
 }
 
 .combo-box:focused, .choice-box:focused {

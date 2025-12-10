@@ -316,14 +316,33 @@ public class MainController implements Initializable {
         long completadas = dataManager.countTareasByEstado(EstadoTarea.completada);
         long retrasadas = dataManager.countTareasByEstado(EstadoTarea.retrasada);
 
+        // Crear datos con colores específicos
+        XYChart.Data<String, Number> datosEnProgreso = new XYChart.Data<>("En Progreso", enProgreso);
+        XYChart.Data<String, Number> datosAbiertas = new XYChart.Data<>("Abiertas", abiertas);
+        XYChart.Data<String, Number> datosCompletadas = new XYChart.Data<>("Completadas", completadas);
+        XYChart.Data<String, Number> datosRetrasadas = new XYChart.Data<>("Retrasadas", retrasadas);
+
         // Añadir datos al gráfico
-        series.getData().add(new XYChart.Data<>("En Progreso", enProgreso));
-        series.getData().add(new XYChart.Data<>("Abiertas", abiertas));
-        series.getData().add(new XYChart.Data<>("Completadas", completadas));
-        series.getData().add(new XYChart.Data<>("Retrasadas", retrasadas));
+        series.getData().addAll(datosEnProgreso, datosAbiertas, datosCompletadas, datosRetrasadas);
 
         // Añadir serie al gráfico
         chartTareasPorEstado.getData().add(series);
+
+        // Aplicar colores a cada barra después de que se renderice
+        Platform.runLater(() -> {
+            if (datosEnProgreso.getNode() != null) {
+                datosEnProgreso.getNode().setStyle("-fx-bar-fill: #3498DB;");
+            }
+            if (datosAbiertas.getNode() != null) {
+                datosAbiertas.getNode().setStyle("-fx-bar-fill: #F39C12;");
+            }
+            if (datosCompletadas.getNode() != null) {
+                datosCompletadas.getNode().setStyle("-fx-bar-fill: #27AE60;");
+            }
+            if (datosRetrasadas.getNode() != null) {
+                datosRetrasadas.getNode().setStyle("-fx-bar-fill: #E74C3C;");
+            }
+        });
     }
 
     // ===========================
