@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.application.Platform;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
@@ -121,23 +122,34 @@ public class ModalNuevaTareaController implements Initializable {
             return;
         }
 
-        boolean exito;
-        if (tareaEditar == null) {
-            // Modo crear
-            Tarea nuevaTarea = crearTareaDesdeFormulario();
-            exito = dataManager.insertarTarea(nuevaTarea);
-        } else {
-            // Modo editar
-            Tarea tareaActualizada = actualizarTareaDesdeFormulario();
-            exito = dataManager.actualizarTarea(tareaActualizada);
-        }
+        try {
+            boolean exito;
+            if (tareaEditar == null) {
+                // Modo crear
+                Tarea nuevaTarea = crearTareaDesdeFormulario();
+                exito = dataManager.insertarTarea(nuevaTarea);
+            } else {
+                // Modo editar
+                Tarea tareaActualizada = actualizarTareaDesdeFormulario();
+                exito = dataManager.actualizarTarea(tareaActualizada);
+            }
 
-        if (exito) {
-            String mensaje = tareaEditar == null ? Constants.MSG_TAREA_CREADA : "Tarea actualizada correctamente";
-            AlertHelper.mostrarExito(Constants.TITULO_EXITO, mensaje);
-            cerrarVentana();
-        } else {
-            AlertHelper.mostrarError(Constants.TITULO_ERROR, Constants.MSG_TAREA_ERROR);
+            if (exito) {
+                String mensaje = tareaEditar == null ? Constants.MSG_TAREA_CREADA : "Tarea actualizada correctamente";
+                AlertHelper.mostrarExito(Constants.TITULO_EXITO, mensaje);
+                cerrarVentana();
+            } else {
+                AlertHelper.mostrarError(Constants.TITULO_ERROR, Constants.MSG_TAREA_ERROR);
+            }
+        } catch (SQLException e) {
+            // Extraer mensaje de error de la BD y mostrar de forma amigable
+            String mensajeError = e.getMessage();
+            if (mensajeError.contains("debe ser posterior")) {
+                mensajeError = "La fecha límite debe ser posterior a la fecha de creación";
+            } else if (mensajeError.contains("violates")) {
+                mensajeError = "Error: Datos inválidos o falta información requerida";
+            }
+            AlertHelper.mostrarAdvertencia(Constants.TITULO_VALIDACION, mensajeError);
         }
     }
 

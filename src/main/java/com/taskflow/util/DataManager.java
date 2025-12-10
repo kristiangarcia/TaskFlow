@@ -201,7 +201,7 @@ public class DataManager {
     /**
      * Inserta una nueva tarea en Supabase
      */
-    public boolean insertarTarea(Tarea tarea) {
+    public boolean insertarTarea(Tarea tarea) throws SQLException {
         String sql = "INSERT INTO tareas (titulo, descripcion, proyecto_categoria, estado, prioridad, " +
                      "fecha_limite, tiempo_estimado_mins, imagen) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -223,7 +223,7 @@ public class DataManager {
             }
         } catch (SQLException e) {
             System.err.println("Error insertando tarea: " + e.getMessage());
-            e.printStackTrace();
+            throw e; // Lanzar la excepción para que el controlador la maneje
         }
         return false;
     }
