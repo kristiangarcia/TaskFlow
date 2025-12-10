@@ -13,6 +13,9 @@ import javafx.application.Platform;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
 public class ModalNuevoUsuarioController implements Initializable {
@@ -35,6 +38,36 @@ public class ModalNuevoUsuarioController implements Initializable {
         dataManager = DataManager.getInstance();
         inicializarComboRol();
         checkActivo.setSelected(true);
+
+        // Agregar eventos de teclado
+        configurarEventosTeclado();
+    }
+
+    /**
+     * Configura eventos de teclado: Enter=Guardar, Escape=Cancelar
+     */
+    private void configurarEventosTeclado() {
+        // Listener para todos los TextFields
+        EventHandler<KeyEvent> keyHandler = this::manejarEventoTeclado;
+        txtNombre.setOnKeyPressed(keyHandler);
+        txtEmail.setOnKeyPressed(keyHandler);
+        txtTelefono.setOnKeyPressed(keyHandler);
+        txtPassword.setOnKeyPressed(keyHandler);
+        comboRol.setOnKeyPressed(keyHandler);
+        checkActivo.setOnKeyPressed(keyHandler);
+    }
+
+    /**
+     * Maneja eventos de teclado (Enter=Guardar, Escape=Cancelar)
+     */
+    private void manejarEventoTeclado(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            handleGuardar();
+            event.consume();
+        } else if (event.getCode() == KeyCode.ESCAPE) {
+            handleCancelar();
+            event.consume();
+        }
     }
 
     /**

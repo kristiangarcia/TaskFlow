@@ -9,6 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import com.taskflow.model.*;
 import com.taskflow.util.DataManager;
@@ -17,6 +20,7 @@ import com.taskflow.util.AlertHelper;
 import com.taskflow.util.Constants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 public class ModalAsignacionesController implements Initializable {
 
@@ -77,10 +81,34 @@ public class ModalAsignacionesController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         dataManager = DataManager.getInstance();
 
-        // Cargar usuarios y poblar comboUsuario
+        // Cargar usuarios y crear FilteredList para búsqueda
+        ObservableList<String> usuariosNombres = FXCollections.observableArrayList();
         for (Usuario usuario : dataManager.getUsuarios()) {
-            comboUsuario.getItems().add(usuario.getNombreCompleto());
+            usuariosNombres.add(usuario.getNombreCompleto());
         }
+
+        // Crear FilteredList para búsqueda en tiempo real
+        FilteredList<String> usuariosFiltrados = new FilteredList<>(usuariosNombres, p -> true);
+
+        // Hacer el ComboBox editable para que sea buscable
+        comboUsuario.setEditable(true);
+
+        // Agregar listener al campo de texto del ComboBox
+        comboUsuario.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+            usuariosFiltrados.setPredicate(usuario -> {
+                // Si el campo está vacío, mostrar todos los usuarios
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchLower = newValue.toLowerCase();
+                // Buscar coincidencias en el nombre
+                return usuario.toLowerCase().contains(searchLower);
+            });
+        });
+
+        // Configurar los items del ComboBox con la lista filtrada
+        comboUsuario.setItems(usuariosFiltrados);
 
         // Poblar comboRol con roles válidos (según constraint de la BD)
         comboRol.getItems().addAll(
@@ -91,6 +119,33 @@ public class ModalAsignacionesController implements Initializable {
 
         // Configurar columnas de TableView
         setupTableColumns();
+
+        // Agregar eventos de teclado
+        configurarEventosTeclado();
+    }
+
+    /**
+     * Configura eventos de teclado: Enter=Añadir/Actualizar, Escape=Cerrar
+     */
+    private void configurarEventosTeclado() {
+        // Listener para los campos del formulario
+        EventHandler<KeyEvent> keyHandler = this::manejarEventoTeclado;
+        comboUsuario.setOnKeyPressed(keyHandler);
+        comboRol.setOnKeyPressed(keyHandler);
+        txtHoras.setOnKeyPressed(keyHandler);
+    }
+
+    /**
+     * Maneja eventos de teclado (Enter=Añadir, Escape=Cerrar)
+     */
+    private void manejarEventoTeclado(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            handleAnadirAsignacion();
+            event.consume();
+        } else if (event.getCode() == KeyCode.ESCAPE) {
+            handleCerrar();
+            event.consume();
+        }
     }
 
     /**

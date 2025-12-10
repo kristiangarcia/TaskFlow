@@ -15,6 +15,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
 public class ModalNuevaTareaController implements Initializable {
@@ -36,6 +39,37 @@ public class ModalNuevaTareaController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         dataManager = DataManager.getInstance();
         inicializarCombos();
+
+        // Agregar eventos de teclado
+        configurarEventosTeclado();
+    }
+
+    /**
+     * Configura eventos de teclado: Enter=Guardar, Escape=Cancelar
+     */
+    private void configurarEventosTeclado() {
+        // Listener para todos los campos
+        EventHandler<KeyEvent> keyHandler = this::manejarEventoTeclado;
+        txtTitulo.setOnKeyPressed(keyHandler);
+        txtDescripcion.setOnKeyPressed(keyHandler);
+        txtCategoria.setOnKeyPressed(keyHandler);
+        comboPrioridad.setOnKeyPressed(keyHandler);
+        comboEstado.setOnKeyPressed(keyHandler);
+        dateFechaLimite.setOnKeyPressed(keyHandler);
+        txtTiempoEstimado.setOnKeyPressed(keyHandler);
+    }
+
+    /**
+     * Maneja eventos de teclado (Enter=Guardar, Escape=Cancelar)
+     */
+    private void manejarEventoTeclado(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            handleGuardar();
+            event.consume();
+        } else if (event.getCode() == KeyCode.ESCAPE) {
+            handleCancelar();
+            event.consume();
+        }
     }
 
     /**
