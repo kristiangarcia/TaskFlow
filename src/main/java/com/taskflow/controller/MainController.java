@@ -18,6 +18,7 @@ import com.taskflow.util.DataManager;
 import com.taskflow.view.ViewManager;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import static com.taskflow.util.Constants.*;
 import com.taskflow.service.AuthService;
 
@@ -96,6 +97,9 @@ public class MainController implements Initializable {
     private CheckBox checkSoloActivos;
 
     @FXML
+    private TextField txtBuscarUsuarios;
+
+    @FXML
     private TableView<Usuario> tableUsuarios;
 
     @FXML
@@ -127,6 +131,9 @@ public class MainController implements Initializable {
     // ===========================
     @FXML
     private Button btnNuevaTareaTab;
+
+    @FXML
+    private TextField txtBuscarTareas;
 
     @FXML
     private ComboBox<String> comboEstado;
@@ -417,7 +424,26 @@ public class MainController implements Initializable {
 
         // Cargar todos los usuarios
         ObservableList<Usuario> usuarios = dataManager.getUsuarios();
-        tableUsuarios.setItems(usuarios);
+
+        // Crear FilteredList para búsqueda en tiempo real
+        FilteredList<Usuario> usuariosFiltrados = new FilteredList<>(usuarios, p -> true);
+
+        // Agregar listener al campo de búsqueda
+        txtBuscarUsuarios.textProperty().addListener((observable, oldValue, newValue) -> {
+            usuariosFiltrados.setPredicate(usuario -> {
+                // Si el campo de búsqueda está vacío, mostrar todos los usuarios
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchLower = newValue.toLowerCase();
+                // Buscar en nombre y email
+                return usuario.getNombreCompleto().toLowerCase().contains(searchLower) ||
+                       usuario.getEmail().toLowerCase().contains(searchLower);
+            });
+        });
+
+        tableUsuarios.setItems(usuariosFiltrados);
 
         // Establecer etiqueta de paginación
         lblPaginacion.setText(String.format("Mostrando %d de %d usuarios",
@@ -559,8 +585,26 @@ public class MainController implements Initializable {
             }
         });
 
-        // Cargar todas las tareas
-        tableTareas.setItems(tareas);
+        // Crear FilteredList para búsqueda en tiempo real
+        FilteredList<Tarea> tareasFiltradas = new FilteredList<>(tareas, p -> true);
+
+        // Agregar listener al campo de búsqueda
+        txtBuscarTareas.textProperty().addListener((observable, oldValue, newValue) -> {
+            tareasFiltradas.setPredicate(tarea -> {
+                // Si el campo de búsqueda está vacío, mostrar todas las tareas
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String searchLower = newValue.toLowerCase();
+                // Buscar en título y descripción
+                return tarea.getTitulo().toLowerCase().contains(searchLower) ||
+                       tarea.getDescripcion().toLowerCase().contains(searchLower);
+            });
+        });
+
+        // Cargar todas las tareas con filtro de búsqueda
+        tableTareas.setItems(tareasFiltradas);
 
         // Conectar acción de btnNuevaTareaTab
         btnNuevaTareaTab.setOnAction(event -> handleNuevaTarea());

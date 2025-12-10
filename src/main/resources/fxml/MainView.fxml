@@ -101,6 +101,7 @@
                     <!-- Barra de herramientas HBox -->
                     <HBox spacing="10" style="-fx-alignment: center-left;">
                         <Button fx:id="btnNuevoUsuarioTab" text="Nuevo Usuario"/>
+                        <TextField fx:id="txtBuscarUsuarios" promptText="Buscar por nombre..." prefWidth="200"/>
                         <ComboBox fx:id="comboFiltroRol" promptText="Filtrar por rol" prefWidth="150"/>
                         <CheckBox fx:id="checkSoloActivos" text="Solo activos"/>
                     </HBox>
@@ -131,6 +132,7 @@
                     <!-- Barra de herramientas HBox -->
                     <HBox spacing="10" style="-fx-alignment: center-left;">
                         <Button fx:id="btnNuevaTareaTab" text="Nueva Tarea"/>
+                        <TextField fx:id="txtBuscarTareas" promptText="Buscar por título..." prefWidth="200"/>
                         <ComboBox fx:id="comboEstado" promptText="Estado" prefWidth="150"/>
                         <ComboBox fx:id="comboPrioridad" promptText="Prioridad" prefWidth="150"/>
                         <ComboBox fx:id="comboCategoria" promptText="Categoría" prefWidth="150"/>
