@@ -425,22 +425,55 @@ public class MainController implements Initializable {
         // Cargar todos los usuarios
         ObservableList<Usuario> usuarios = dataManager.getUsuarios();
 
-        // Crear FilteredList para búsqueda en tiempo real
+        // Crear FilteredList para búsqueda y filtros
         FilteredList<Usuario> usuariosFiltrados = new FilteredList<>(usuarios, p -> true);
+
+        // Función auxiliar para actualizar el predicado con todos los filtros activos
+        java.util.function.Predicate<Usuario> actualizarFiltroUsuarios = usuario -> {
+            // Filtro de búsqueda por texto
+            String textoBusqueda = txtBuscarUsuarios.getText();
+            if (textoBusqueda != null && !textoBusqueda.isEmpty()) {
+                String searchLower = textoBusqueda.toLowerCase();
+                boolean coincideTexto = usuario.getNombreCompleto().toLowerCase().contains(searchLower) ||
+                                      usuario.getEmail().toLowerCase().contains(searchLower);
+                if (!coincideTexto) {
+                    return false;
+                }
+            }
+
+            // Filtro de rol
+            String rolSeleccionado = comboFiltroRol.getValue();
+            if (rolSeleccionado != null && !rolSeleccionado.equals(FILTRO_TODOS)) {
+                if (!usuario.getRol().name().equals(rolSeleccionado)) {
+                    return false;
+                }
+            }
+
+            // Filtro de solo activos
+            if (checkSoloActivos.isSelected()) {
+                if (!usuario.isActivo()) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
 
         // Agregar listener al campo de búsqueda
         txtBuscarUsuarios.textProperty().addListener((observable, oldValue, newValue) -> {
-            usuariosFiltrados.setPredicate(usuario -> {
-                // Si el campo de búsqueda está vacío, mostrar todos los usuarios
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
+            usuariosFiltrados.setPredicate(null); // Reset
+            usuariosFiltrados.setPredicate(actualizarFiltroUsuarios);
+        });
 
-                String searchLower = newValue.toLowerCase();
-                // Buscar en nombre y email
-                return usuario.getNombreCompleto().toLowerCase().contains(searchLower) ||
-                       usuario.getEmail().toLowerCase().contains(searchLower);
-            });
+        // Agregar listeners a los filtros
+        comboFiltroRol.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            usuariosFiltrados.setPredicate(null); // Reset
+            usuariosFiltrados.setPredicate(actualizarFiltroUsuarios);
+        });
+
+        checkSoloActivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            usuariosFiltrados.setPredicate(null); // Reset
+            usuariosFiltrados.setPredicate(actualizarFiltroUsuarios);
         });
 
         tableUsuarios.setItems(usuariosFiltrados);
@@ -585,22 +618,69 @@ public class MainController implements Initializable {
             }
         });
 
-        // Crear FilteredList para búsqueda en tiempo real
+        // Crear FilteredList para búsqueda y filtros
         FilteredList<Tarea> tareasFiltradas = new FilteredList<>(tareas, p -> true);
+
+        // Función auxiliar para actualizar el predicado con todos los filtros activos
+        java.util.function.Predicate<Tarea> actualizarFiltro = tarea -> {
+            // Filtro de búsqueda por texto
+            String textoBusqueda = txtBuscarTareas.getText();
+            if (textoBusqueda != null && !textoBusqueda.isEmpty()) {
+                String searchLower = textoBusqueda.toLowerCase();
+                boolean coincideTexto = tarea.getTitulo().toLowerCase().contains(searchLower) ||
+                                      tarea.getDescripcion().toLowerCase().contains(searchLower);
+                if (!coincideTexto) {
+                    return false;
+                }
+            }
+
+            // Filtro de estado
+            String estadoSeleccionado = comboEstado.getValue();
+            if (estadoSeleccionado != null && !estadoSeleccionado.equals(FILTRO_TODOS)) {
+                if (!tarea.getEstado().name().equals(estadoSeleccionado)) {
+                    return false;
+                }
+            }
+
+            // Filtro de prioridad
+            String prioridadSeleccionada = comboPrioridad.getValue();
+            if (prioridadSeleccionada != null && !prioridadSeleccionada.equals(FILTRO_TODOS)) {
+                if (!tarea.getPrioridad().name().equals(prioridadSeleccionada)) {
+                    return false;
+                }
+            }
+
+            // Filtro de categoría
+            String categoriaSeleccionada = comboCategoria.getValue();
+            if (categoriaSeleccionada != null && !categoriaSeleccionada.equals(FILTRO_TODOS)) {
+                if (!tarea.getProyectoCategoria().equals(categoriaSeleccionada)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
 
         // Agregar listener al campo de búsqueda
         txtBuscarTareas.textProperty().addListener((observable, oldValue, newValue) -> {
-            tareasFiltradas.setPredicate(tarea -> {
-                // Si el campo de búsqueda está vacío, mostrar todas las tareas
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
+            tareasFiltradas.setPredicate(null); // Reset
+            tareasFiltradas.setPredicate(actualizarFiltro);
+        });
 
-                String searchLower = newValue.toLowerCase();
-                // Buscar en título y descripción
-                return tarea.getTitulo().toLowerCase().contains(searchLower) ||
-                       tarea.getDescripcion().toLowerCase().contains(searchLower);
-            });
+        // Agregar listeners a los ComboBox de filtros
+        comboEstado.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            tareasFiltradas.setPredicate(null); // Reset
+            tareasFiltradas.setPredicate(actualizarFiltro);
+        });
+
+        comboPrioridad.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            tareasFiltradas.setPredicate(null); // Reset
+            tareasFiltradas.setPredicate(actualizarFiltro);
+        });
+
+        comboCategoria.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            tareasFiltradas.setPredicate(null); // Reset
+            tareasFiltradas.setPredicate(actualizarFiltro);
         });
 
         // Cargar todas las tareas con filtro de búsqueda
