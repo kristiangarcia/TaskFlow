@@ -15,12 +15,17 @@ import javafx.scene.chart.XYChart;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import com.taskflow.model.*;
 import com.taskflow.util.DataManager;
+import com.taskflow.util.ExportManager;
+import com.taskflow.util.ImportManager;
+import com.taskflow.util.AlertHelper;
 import com.taskflow.view.ViewManager;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import static com.taskflow.util.Constants.*;
 import com.taskflow.service.AuthService;
+import javafx.stage.FileChooser;
+import java.io.File;
 
 public class MainController implements Initializable {
 
@@ -53,6 +58,18 @@ public class MainController implements Initializable {
 
     @FXML
     private Button btnAsignaciones;
+
+    @FXML
+    private Button btnExportarUsuarios;
+
+    @FXML
+    private Button btnExportarTareas;
+
+    @FXML
+    private Button btnImportarUsuarios;
+
+    @FXML
+    private Button btnImportarTareas;
 
     // ===========================
     // Pestaña 1: Panel de administrador
@@ -158,6 +175,9 @@ public class MainController implements Initializable {
 
     @FXML
     private TableColumn<Tarea, Prioridad> colPrioridadTareas;
+
+    @FXML
+    private TableColumn<Tarea, Integer> colTiempoEstimadoTareas;
 
     @FXML
     private TableColumn<Tarea, EstadoTarea> colEstadoTareas;
@@ -503,6 +523,12 @@ public class MainController implements Initializable {
 
         // Conectar acción de btnNuevoUsuarioTab
         btnNuevoUsuarioTab.setOnAction(event -> handleNuevoUsuario());
+
+        // Botón exportar usuarios
+        btnExportarUsuarios.setOnAction(event -> handleExportarUsuarios());
+
+        // Botón importar usuarios
+        btnImportarUsuarios.setOnAction(event -> handleImportarUsuarios());
     }
 
     // ===========================
@@ -534,6 +560,7 @@ public class MainController implements Initializable {
         colTituloTareas.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         colCategoriaTareas.setCellValueFactory(new PropertyValueFactory<>("proyectoCategoria"));
         colPrioridadTareas.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
+        colTiempoEstimadoTareas.setCellValueFactory(new PropertyValueFactory<>("tiempoEstimadoMins"));
         colEstadoTareas.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
         // Fábrica de celdas personalizada para colAsignadosTareas (contador de asignaciones reales)
@@ -707,6 +734,12 @@ public class MainController implements Initializable {
 
         // Conectar acción de btnNuevaTareaTab
         btnNuevaTareaTab.setOnAction(event -> handleNuevaTarea());
+
+        // Botón exportar tareas
+        btnExportarTareas.setOnAction(event -> handleExportarTareas());
+
+        // Botón importar tareas
+        btnImportarTareas.setOnAction(event -> handleImportarTareas());
     }
 
     // ===========================
@@ -820,6 +853,102 @@ public class MainController implements Initializable {
     @FXML
     void handleNuevaTarea() {
         ViewManager.getInstance().openModalFxml("/fxml/ModalNuevaTarea.fxml", "Nueva Tarea", 700, 600);
+    }
+
+    @FXML
+    void handleExportarUsuarios() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exportar Usuarios a CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("usuarios.csv");
+
+        File file = fileChooser.showSaveDialog(btnExportarUsuarios.getScene().getWindow());
+        if (file != null) {
+            if (ExportManager.exportarUsuariosCSV(tableUsuarios.getItems(), file.getAbsolutePath())) {
+                AlertHelper.mostrarExito("Exportación exitosa", "Usuarios exportados a: " + file.getName());
+            } else {
+                AlertHelper.mostrarError("Error", "No se pudieron exportar los usuarios");
+            }
+        }
+    }
+
+    @FXML
+    void handleExportarTareas() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exportar Tareas a CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("tareas.csv");
+
+        File file = fileChooser.showSaveDialog(btnExportarTareas.getScene().getWindow());
+        if (file != null) {
+            if (ExportManager.exportarTareasCSV(tableTareas.getItems(), file.getAbsolutePath())) {
+                AlertHelper.mostrarExito("Exportación exitosa", "Tareas exportadas a: " + file.getName());
+            } else {
+                AlertHelper.mostrarError("Error", "No se pudieron exportar las tareas");
+            }
+        }
+    }
+
+    @FXML
+    void handleImportarUsuarios() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Importar Usuarios desde CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File file = fileChooser.showOpenDialog(btnImportarUsuarios.getScene().getWindow());
+        if (file != null) {
+            java.util.List<Usuario> usuarios = ImportManager.importarUsuariosCSV(file.getAbsolutePath());
+            if (!usuarios.isEmpty()) {
+                int importados = 0;
+                for (Usuario usuario : usuarios) {
+                    if (dataManager.insertarUsuario(usuario)) {
+                        importados++;
+                    }
+                }
+                AlertHelper.mostrarExito("Importación exitosa", importados + " usuarios importados correctamente");
+                recargarUsuarios();
+            } else {
+                AlertHelper.mostrarAdvertencia("Importación", "No se pudieron leer usuarios del archivo CSV");
+            }
+        }
+    }
+
+    @FXML
+    void handleImportarTareas() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Importar Tareas desde CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        File file = fileChooser.showOpenDialog(btnImportarTareas.getScene().getWindow());
+        if (file != null) {
+            java.util.List<Tarea> tareas = ImportManager.importarTareasCSV(file.getAbsolutePath());
+            if (!tareas.isEmpty()) {
+                int importadas = 0;
+                try {
+                    for (Tarea tarea : tareas) {
+                        if (dataManager.insertarTarea(tarea)) {
+                            importadas++;
+                        }
+                    }
+                } catch (java.sql.SQLException e) {
+                    AlertHelper.mostrarAdvertencia("Error SQL", "Error al importar tareas: " + e.getMessage());
+                }
+                AlertHelper.mostrarExito("Importación exitosa", importadas + " tareas importadas correctamente");
+                recargarTareas();
+            } else {
+                AlertHelper.mostrarAdvertencia("Importación", "No se pudieron leer tareas del archivo CSV");
+            }
+        }
+    }
+
+    private void recargarUsuarios() {
+        ObservableList<Usuario> usuarios = dataManager.getUsuarios();
+        tableUsuarios.setItems(usuarios);
+    }
+
+    private void recargarTareas() {
+        ObservableList<Tarea> tareas = dataManager.getTareas();
+        tableTareas.setItems(tareas);
     }
 
     void handleAsignaciones(Tarea tarea) {
