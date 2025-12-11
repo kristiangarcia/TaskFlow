@@ -343,7 +343,10 @@ public class MainController implements Initializable {
         XYChart.Data<String, Number> datosRetrasadas = new XYChart.Data<>("Retrasadas", retrasadas);
 
         // Añadir datos al gráfico
-        series.getData().addAll(datosEnProgreso, datosAbiertas, datosCompletadas, datosRetrasadas);
+        series.getData().add(datosEnProgreso);
+        series.getData().add(datosAbiertas);
+        series.getData().add(datosCompletadas);
+        series.getData().add(datosRetrasadas);
 
         // Añadir serie al gráfico
         chartTareasPorEstado.getData().add(series);
