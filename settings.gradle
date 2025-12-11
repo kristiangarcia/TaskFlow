@@ -1,1 +1,10 @@
+/*
+ * Archivo de configuración del proyecto TaskFlow
+ */
+
+plugins {
+    // Plugin que permite la descarga automática del JDK necesario
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
 rootProject.name = 'TaskFlow'

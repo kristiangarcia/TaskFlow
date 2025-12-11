@@ -1,0 +1,39 @@
+{
+    // Configuración de ejecución para VS Code
+    // https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "macOS - Archivo actual",
+            "request": "launch",
+            "mainClass": "${file}",
+            "vmArgs": "--module-path ${env:HOME}/javafx-sdk-25/lib --add-modules javafx.base,javafx.graphics,javafx.controls,javafx.fxml --enable-native-access=javafx.graphics",
+            "projectName": "TaskFlow"
+        },
+        {
+            "type": "java",
+            "name": "macOS - TaskFlow",
+            "request": "launch",
+            "mainClass": "com.taskflow.Main",
+            "vmArgs": "--module-path ${env:HOME}/javafx-sdk-25/lib --add-modules javafx.base,javafx.graphics,javafx.controls,javafx.fxml --enable-native-access=javafx.graphics",
+            "projectName": "TaskFlow"
+        },
+        {
+            "type": "java",
+            "name": "Windows - Archivo actual",
+            "request": "launch",
+            "mainClass": "${file}",
+            "vmArgs": "--module-path C:\\javafx-sdk-25\\lib --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.fxml --enable-native-access=javafx.graphics",
+            "projectName": "TaskFlow"
+        },
+        {
+            "type": "java",
+            "name": "Windows - TaskFlow",
+            "request": "launch",
+            "mainClass": "com.taskflow.Main",
+            "vmArgs": "--module-path C:\\javafx-sdk-25\\lib --add-modules javafx.base,javafx.controls,javafx.graphics,javafx.fxml --enable-native-access=javafx.graphics",
+            "projectName": "TaskFlow"
+        }
+    ]
+}

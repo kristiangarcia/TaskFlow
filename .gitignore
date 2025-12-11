@@ -33,8 +33,7 @@ out/
 .settings/
 bin/
 
-# VS Code
-.vscode/
+# VS Code (mantenemos .vscode para compartir configuración de ejecución)
 
 # NetBeans
 nbproject/private/
