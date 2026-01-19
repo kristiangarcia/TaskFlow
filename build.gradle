@@ -22,6 +22,12 @@ dependencies {
 
     // FontAwesomeFX para iconos
     implementation 'de.jensd:fontawesomefx-fontawesome:4.7.0-9.1.2'
+
+    // JasperReports para generación de informes
+    implementation 'net.sf.jasperreports:jasperreports:7.0.1'
+    implementation 'net.sf.jasperreports:jasperreports-pdf:7.0.0'
+    implementation 'net.sf.jasperreports:jasperreports-fonts:7.0.1'
+    implementation 'net.sf.jasperreports:jasperreports-charts:7.0.1'
 }
 
 javafx {
@@ -30,7 +36,8 @@ javafx {
         'javafx.base',
         'javafx.graphics',
         'javafx.controls',
-        'javafx.fxml'
+        'javafx.fxml',
+        'javafx.web'
     ]
 }
 
@@ -48,18 +55,15 @@ application {
     ]
 }
 
-run {
-    jvmArgs = [
-        '--enable-native-access=ALL-UNNAMED',
-        '--enable-native-access=javafx.graphics'
-    ]
+tasks.named('run') {
+    jvmArgs = application.applicationDefaultJvmArgs
 }
 
 sourceSets {
     main {
         resources {
             srcDirs = ["src/main/resources"]
-            includes = ["**/*.fxml", "**/*.png", "**/*.jpg", "**/*.properties", "**/*.css"]
+            includes = ["**/*.fxml", "**/*.png", "**/*.jpg", "**/*.properties", "**/*.css", "**/*.jasper"]
         }
     }
 }

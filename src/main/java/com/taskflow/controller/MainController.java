@@ -101,6 +101,19 @@ public class MainController implements Initializable {
     @FXML
     private TableColumn<Tarea, EstadoTarea> colEstadoDeadlines;
 
+    // Sección de Informes
+    @FXML
+    private Button btnInformeTareasGrafica;
+
+    @FXML
+    private Button btnInformeAsignaciones;
+
+    @FXML
+    private ComboBox<String> comboEstadoFiltro;
+
+    @FXML
+    private javafx.scene.web.WebView webViewInforme;
+
     // ===========================
     // Pestaña 2: Gestión de usuarios
     // ===========================
@@ -324,6 +337,16 @@ public class MainController implements Initializable {
             .limit(10)
             .collect(Collectors.toCollection(FXCollections::observableArrayList));
         tableDeadlines.setItems(tareasProximas);
+
+        // Inicializar combo de filtro de estado para informes
+        comboEstadoFiltro.getItems().addAll(
+            "Todos",
+            "abierta",
+            "en_progreso",
+            "completada",
+            "retrasada"
+        );
+        comboEstadoFiltro.getSelectionModel().selectFirst();
     }
 
     private void configurarGraficoBarras() {
@@ -1016,6 +1039,64 @@ public class MainController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setContentText("No se pudo abrir el formulario de edición");
+            alert.showAndWait();
+        }
+    }
+
+    // ===========================
+    // Handlers para Informes
+    // ===========================
+
+    /**
+     * Handler para generar el informe de tareas con gráfica (INCRUSTADO)
+     */
+    @FXML
+    private void handleInformeTareasGrafica() {
+        try {
+            com.taskflow.util.ReportManager reportManager = com.taskflow.util.ReportManager.getInstance();
+            reportManager.generarInformeTareasGrafica(webViewInforme);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error generando informe");
+            alert.setContentText("No se pudo generar el informe de tareas.\n\n" +
+                                "Verifica que:\n" +
+                                "1. Los archivos .jasper están compilados\n" +
+                                "2. Existe la carpeta 'informes'\n" +
+                                "3. Hay conexión a la base de datos\n\n" +
+                                "Error: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * Handler para generar el informe de asignaciones filtrado (NO INCRUSTADO)
+     */
+    @FXML
+    private void handleInformeAsignaciones() {
+        try {
+            // Obtener estado seleccionado del combo
+            String estadoSeleccionado = comboEstadoFiltro.getSelectionModel().getSelectedItem();
+
+            // Si es "Todos", pasar null como filtro
+            String estadoFiltro = (estadoSeleccionado != null && !estadoSeleccionado.equals("Todos"))
+                                  ? estadoSeleccionado
+                                  : null;
+
+            com.taskflow.util.ReportManager reportManager = com.taskflow.util.ReportManager.getInstance();
+            reportManager.generarInformeAsignacionesFiltrado(estadoFiltro);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Error generando informe");
+            alert.setContentText("No se pudo generar el informe de asignaciones.\n\n" +
+                                "Verifica que:\n" +
+                                "1. Los archivos .jasper están compilados\n" +
+                                "2. Existe la carpeta 'informes'\n" +
+                                "3. Hay conexión a la base de datos\n\n" +
+                                "Error: " + e.getMessage());
             alert.showAndWait();
         }
     }

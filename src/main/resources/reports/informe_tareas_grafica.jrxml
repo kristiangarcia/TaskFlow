@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- INFORME 1: Simple + Gráfica + Incrustado -->
+<!-- Requisitos: a + d + e -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="informe_tareas_grafica"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="555"
+              leftMargin="20"
+              rightMargin="20"
+              topMargin="20"
+              bottomMargin="20"
+              uuid="8e868b10-13bf-46ea-81eb-b014043c2e82">
+
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+	<style name="Title" fontName="SansSerif" fontSize="26" isBold="true" forecolor="#2C3E50"/>
+	<style name="SubTitle" fontName="SansSerif" fontSize="14" forecolor="#3498DB"/>
+	<style name="ColumnHeader" mode="Opaque" backcolor="#2C3E50" fontName="SansSerif" fontSize="10" isBold="true" forecolor="#FFFFFF"/>
+	<style name="DetailRow" fontName="SansSerif" fontSize="9" forecolor="#2C3E50"/>
+
+	<!-- Subdataset para la gráfica de pastel -->
+	<subDataset name="EstadosDataset" uuid="a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d">
+		<queryString language="SQL">
+			<![CDATA[SELECT
+    COALESCE(estado, 'Sin estado') AS estado,
+    COUNT(*) AS cantidad
+FROM tareas
+GROUP BY estado
+ORDER BY cantidad DESC]]>
+		</queryString>
+		<field name="estado" class="java.lang.String"/>
+		<field name="cantidad" class="java.lang.Long"/>
+	</subDataset>
+
+	<!-- Query simple: todas las tareas ordenadas por fecha límite -->
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    id_tarea,
+    titulo,
+    proyecto_categoria,
+    estado,
+    prioridad,
+    fecha_limite,
+    tiempo_estimado_mins,
+    imagen,
+    fecha_creacion
+FROM tareas
+ORDER BY fecha_limite ASC, prioridad DESC]]>
+	</queryString>
+
+	<field name="id_tarea" class="java.lang.Integer"/>
+	<field name="titulo" class="java.lang.String"/>
+	<field name="proyecto_categoria" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="prioridad" class="java.lang.String"/>
+	<field name="fecha_limite" class="java.sql.Date"/>
+	<field name="tiempo_estimado_mins" class="java.lang.Integer"/>
+	<field name="imagen" class="java.io.InputStream"/>
+	<field name="fecha_creacion" class="java.sql.Timestamp"/>
+
+	<!-- Variables para contar -->
+	<variable name="TotalTareas" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{id_tarea}]]></variableExpression>
+	</variable>
+
+	<!-- Título -->
+	<title>
+		<band height="100" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="100" backcolor="#3498DB" uuid="def266e1-760c-4ce7-9aef-bcddab6c1511"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+
+			<staticText>
+				<reportElement x="20" y="20" width="300" height="40" forecolor="#FFFFFF" uuid="a554bb0d-f881-49dd-a92a-992381868659"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TaskFlow - Informe de Tareas]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement x="20" y="60" width="400" height="25" forecolor="#FFFFFF" uuid="5a7f5dae-5e05-424d-b58c-ba725af3dd76"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Listado completo con distribución gráfica por estado]]></text>
+			</staticText>
+
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="400" y="30" width="135" height="20" forecolor="#FFFFFF" uuid="1aa19278-b028-49ab-8dc3-91fcc48e2fb6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+
+	<!-- Encabezados de columna -->
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement style="ColumnHeader" x="0" y="0" width="40" height="30" uuid="86f36a88-e77c-4cb7-b337-40612b49f606"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="40" y="0" width="150" height="30" uuid="ee0953c4-3722-4b3f-b555-291154b9901a"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Título]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="190" y="0" width="100" height="30" uuid="82a882b0-084f-41d1-bbab-0163081367a7"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Categoría]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="290" y="0" width="70" height="30" uuid="4b1fcfab-70f6-4213-abd7-fd7743a728e0"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="360" y="0" width="60" height="30" uuid="d61ac017-684f-4bb7-ac84-4f8ea14fe37b"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Prioridad]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="420" y="0" width="70" height="30" uuid="96f94b2d-4fdc-4642-83c3-25156a246f76"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[F. Límite]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="490" y="0" width="65" height="30" uuid="cce0b0e4-09dc-4e63-9214-1f17013ef8e4"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Est.(min)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+
+	<!-- Detalle -->
+	<detail>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="555" height="25" uuid="7412d0f3-7831-458d-8f08-239ab9d96634"/>
+
+				<!-- Fondo alternado -->
+				<rectangle>
+					<reportElement x="0" y="0" width="555" height="25" backcolor="#EBF5FB" uuid="66a9db28-89a1-4da5-a87f-928ee02b2326">
+						<printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
+					</reportElement>
+					<graphicElement><pen lineWidth="0.0"/></graphicElement>
+				</rectangle>
+
+				<textField>
+					<reportElement style="DetailRow" x="0" y="0" width="40" height="25" uuid="b74e52fa-70b6-40eb-813f-9bf6bc3be7a9"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{id_tarea}]]></textFieldExpression>
+				</textField>
+
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="40" y="0" width="150" height="25" uuid="8e2625e4-8628-4ecb-91e8-5032533ce6c4"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="190" y="0" width="100" height="25" uuid="26f49223-2821-4930-8d37-966c1e5d724f"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{proyecto_categoria}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="290" y="0" width="70" height="25" uuid="935019f0-cd67-4471-a150-f2fef083ebe4"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="360" y="0" width="60" height="25" uuid="abae0ca8-f223-4515-b415-aea2f336977a"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{prioridad}.toUpperCase()]]></textFieldExpression>
+				</textField>
+
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="420" y="0" width="70" height="25" uuid="e812f0cc-57a7-46e6-8ea2-5a3b2a19bb5f"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fecha_limite}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="490" y="0" width="65" height="25" uuid="16b3cdee-7231-4499-a1fa-bec69eec18b8"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tiempo_estimado_mins}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+
+	<!-- Pie de página -->
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="3" width="555" height="1" forecolor="#3498DB" uuid="80b1bea1-625e-43d6-bc61-0e551bc8d72b"/>
+			</line>
+
+			<textField>
+				<reportElement x="220" y="8" width="100" height="15" forecolor="#7F8C8D" uuid="d03b2286-fcb0-45eb-8088-5fe972ce41a4"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+
+			<staticText>
+				<reportElement x="10" y="8" width="200" height="15" forecolor="#7F8C8D" uuid="a7623254-b02e-4305-b907-f87f7d726f16"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[TaskFlow - Sistema de Gestión de Tareas]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+
+	<!-- Resumen con gráfica -->
+	<summary>
+		<band height="350" splitType="Stretch">
+			<!-- Separador -->
+			<line>
+				<reportElement x="0" y="10" width="555" height="1" forecolor="#3498DB" uuid="73e7a072-00fb-4f94-96ef-98289a21ac41"/>
+				<graphicElement><pen lineWidth="2.0"/></graphicElement>
+			</line>
+
+			<!-- Total de tareas -->
+			<staticText>
+				<reportElement x="20" y="20" width="150" height="25" forecolor="#2C3E50" uuid="d48bc05d-b3cf-4cb5-9fba-9de005705071"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total de tareas:]]></text>
+			</staticText>
+
+			<textField>
+				<reportElement x="170" y="20" width="100" height="25" forecolor="#3498DB" uuid="1507104e-4b45-4e23-ab0d-9d230ae8c411"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+
+			<!-- Título de la gráfica -->
+			<staticText>
+				<reportElement x="20" y="60" width="515" height="30" forecolor="#2C3E50" uuid="1681833e-b409-4342-b523-e644d28af6f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Distribución de Tareas por Estado]]></text>
+			</staticText>
+
+			<!-- Gráfica de pastel (Pie Chart) -->
+			<pieChart>
+				<chart evaluationTime="Report">
+					<reportElement x="77" y="100" width="400" height="240" uuid="e79f7188-5aa5-4d36-9f36-0f59fc374ba9"/>
+					<chartTitle>
+						<font fontName="SansSerif" size="12" isBold="true"/>
+					</chartTitle>
+					<chartSubtitle/>
+					<chartLegend position="Bottom">
+						<font fontName="SansSerif" size="9"/>
+					</chartLegend>
+				</chart>
+				<pieDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="EstadosDataset" uuid="b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e">
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+					</dataset>
+					<keyExpression><![CDATA[$F{estado}]]></keyExpression>
+					<valueExpression><![CDATA[$F{cantidad}]]></valueExpression>
+				</pieDataset>
+				<piePlot>
+					<plot>
+						<seriesColor seriesOrder="0" color="#27AE60"/>
+						<seriesColor seriesOrder="1" color="#3498DB"/>
+						<seriesColor seriesOrder="2" color="#F39C12"/>
+						<seriesColor seriesOrder="3" color="#E74C3C"/>
+					</plot>
+					<itemLabel>
+						<font fontName="SansSerif" size="9"/>
+					</itemLabel>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>

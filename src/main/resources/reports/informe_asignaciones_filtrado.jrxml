@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- INFORME 2: SQL Compuesta + Parámetro Condicional + No Incrustado -->
+<!-- Requisitos: b + c + e -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="informe_asignaciones_filtrado"
+              pageWidth="842"
+              pageHeight="595"
+              orientation="Landscape"
+              columnWidth="802"
+              leftMargin="20"
+              rightMargin="20"
+              topMargin="20"
+              bottomMargin="20"
+              uuid="d9bfec1f-521a-469a-9aef-47935be36523">
+
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+	<style name="Title" fontName="SansSerif" fontSize="26" isBold="true" forecolor="#2C3E50"/>
+	<style name="SubTitle" fontName="SansSerif" fontSize="14" forecolor="#3498DB"/>
+	<style name="ColumnHeader" mode="Opaque" backcolor="#2C3E50" fontName="SansSerif" fontSize="10" isBold="true" forecolor="#FFFFFF"/>
+	<style name="DetailRow" fontName="SansSerif" fontSize="9" forecolor="#2C3E50"/>
+
+	<!-- PARÁMETRO: Filtro por estado de tarea -->
+	<parameter name="estado_filtro" class="java.lang.String" isForPrompting="true">
+		<parameterDescription><![CDATA[Estado de tarea para filtrar: abierta, en_progreso, completada, retrasada. Dejar vacío para ver todos.]]></parameterDescription>
+		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+	</parameter>
+
+	<!-- Query compuesta que relaciona las 3 tablas con filtro condicional -->
+	<queryString language="SQL">
+		<![CDATA[SELECT
+    t.id_tarea,
+    t.titulo,
+    t.proyecto_categoria,
+    t.estado,
+    t.prioridad,
+    t.fecha_limite,
+    t.tiempo_estimado_mins,
+    u.nombre_completo AS usuario_asignado,
+    u.email AS usuario_email,
+    u.telefono AS usuario_telefono,
+    a.rol_asignacion,
+    a.horas_asignadas,
+    a.completado AS asignacion_completada,
+    a.fecha_asignacion
+FROM tareas t
+LEFT JOIN asignaciones a ON t.id_tarea = a.tarea_id
+LEFT JOIN usuarios u ON a.usuario_id = u.id_usuario
+WHERE ($P{estado_filtro} IS NULL OR t.estado = $P{estado_filtro})
+ORDER BY t.fecha_limite ASC, t.prioridad DESC, t.id_tarea]]>
+	</queryString>
+
+	<field name="id_tarea" class="java.lang.Integer"/>
+	<field name="titulo" class="java.lang.String"/>
+	<field name="proyecto_categoria" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="prioridad" class="java.lang.String"/>
+	<field name="fecha_limite" class="java.sql.Date"/>
+	<field name="tiempo_estimado_mins" class="java.lang.Integer"/>
+	<field name="usuario_asignado" class="java.lang.String"/>
+	<field name="usuario_email" class="java.lang.String"/>
+	<field name="usuario_telefono" class="java.lang.String"/>
+	<field name="rol_asignacion" class="java.lang.String"/>
+	<field name="horas_asignadas" class="java.math.BigDecimal"/>
+	<field name="asignacion_completada" class="java.lang.Boolean"/>
+	<field name="fecha_asignacion" class="java.sql.Date"/>
+
+	<variable name="TotalRegistros" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{id_tarea}]]></variableExpression>
+	</variable>
+
+	<variable name="TotalHoras" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{horas_asignadas}]]></variableExpression>
+	</variable>
+
+	<!-- Título -->
+	<title>
+		<band height="120" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="802" height="120" backcolor="#3498DB" uuid="d08bae5d-b108-45e8-9f5e-7f7b159e5b0e"/>
+				<graphicElement><pen lineWidth="0.0"/></graphicElement>
+			</rectangle>
+
+			<staticText>
+				<reportElement x="20" y="20" width="500" height="40" forecolor="#FFFFFF" uuid="f8d8e049-2c1e-477c-b40b-5fd083ec0e69"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="24" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TaskFlow - Informe de Asignaciones]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement x="20" y="60" width="500" height="25" forecolor="#FFFFFF" uuid="736c4490-6c60-42de-be79-904569f2f9e5"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Relación completa: Tareas → Asignaciones → Usuarios]]></text>
+			</staticText>
+
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement x="640" y="25" width="142" height="20" forecolor="#FFFFFF" uuid="230b59c7-883f-42c4-bea1-f2e15c90c271"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+
+			<!-- Mostrar filtro aplicado -->
+			<staticText>
+				<reportElement x="20" y="90" width="100" height="20" forecolor="#FFFFFF" uuid="58ca3632-27fb-40f6-b2d4-b8d3e59f8e0e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Filtro de estado:]]></text>
+			</staticText>
+
+			<textField isBlankWhenNull="true">
+				<reportElement x="120" y="90" width="200" height="20" forecolor="#FFFFFF" uuid="3d54fee5-f956-410c-b47e-86b325ac23b9"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{estado_filtro} != null ? $P{estado_filtro}.toUpperCase() : "TODOS"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+
+	<!-- Encabezados de columna -->
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement style="ColumnHeader" x="0" y="0" width="35" height="30" uuid="5a516de0-b958-4a46-bc4b-78a6f7f6b1a1"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="35" y="0" width="130" height="30" uuid="b7e8fd73-ac97-4181-832e-c9f60f1141de"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Título Tarea]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="165" y="0" width="85" height="30" uuid="c8f433e5-1e22-4af5-8e61-756cbc8fd563"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Categoría]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="250" y="0" width="65" height="30" uuid="3a62000a-8da8-45bd-bdfb-75becb530847"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Estado]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="315" y="0" width="55" height="30" uuid="5964e666-4b0f-46d2-b094-145278874d7c"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Prior.]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="370" y="0" width="65" height="30" uuid="09b1e8d1-452f-4f11-8f58-362251b6429c"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[F. Límite]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="435" y="0" width="120" height="30" uuid="14f8fa6c-398c-49c2-b9b4-dc091673e141"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Usuario Asignado]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="555" y="0" width="130" height="30" uuid="fa5560c8-d87e-409a-91b7-1e1528c86705"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Email]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="685" y="0" width="70" height="30" uuid="88a33819-c40a-41e9-9913-a7164abd48e3"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Rol]]></text>
+			</staticText>
+
+			<staticText>
+				<reportElement style="ColumnHeader" x="755" y="0" width="47" height="30" uuid="84634238-1019-4515-9ea5-c88132597980"/>
+				<box padding="3"><pen lineWidth="0.5" lineColor="#2C3E50"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Hrs.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+
+	<!-- Detalle -->
+	<detail>
+		<band height="22" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="802" height="22" uuid="272780da-7161-4c8a-aa95-edcd77d8a340"/>
+
+				<!-- Fondo alternado -->
+				<rectangle>
+					<reportElement x="0" y="0" width="802" height="22" backcolor="#EBF5FB" uuid="d675a2ef-906b-41ef-8872-376c52ed02cf">
+						<printWhenExpression><![CDATA[$V{REPORT_COUNT} % 2 == 0]]></printWhenExpression>
+					</reportElement>
+					<graphicElement><pen lineWidth="0.0"/></graphicElement>
+				</rectangle>
+
+				<textField>
+					<reportElement style="DetailRow" x="0" y="0" width="35" height="22" uuid="75c13c7f-34f2-4237-818c-eb1d2a70ba44"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{id_tarea}]]></textFieldExpression>
+				</textField>
+
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="35" y="0" width="130" height="22" uuid="8a1e2b3c-4d5f-6a7b-8c9d-0e1f2a3b4c5d"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="165" y="0" width="85" height="22" uuid="9b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{proyecto_categoria}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="250" y="0" width="65" height="22" uuid="0c1d2e3f-4a5b-6c7d-8e9f-0a1b2c3d4e5f"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{estado}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="315" y="0" width="55" height="22" uuid="1d2e3f4a-5b6c-7d8e-9f0a-1b2c3d4e5f6a"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{prioridad}.toUpperCase()]]></textFieldExpression>
+				</textField>
+
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="370" y="0" width="65" height="22" uuid="2e3f4a5b-6c7d-8e9f-0a1b-2c3d4e5f6a7b"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fecha_limite}]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="435" y="0" width="120" height="22" uuid="3f4a5b6c-7d8e-9f0a-1b2c-3d4e5f6a7b8c"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{usuario_asignado} != null ? $F{usuario_asignado} : "Sin asignar"]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="555" y="0" width="130" height="22" uuid="4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{usuario_email} != null ? $F{usuario_email} : "-"]]></textFieldExpression>
+				</textField>
+
+				<textField isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="685" y="0" width="70" height="22" uuid="5b6c7d8e-9f0a-1b2c-3d4e-5f6a7b8c9d0e"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{rol_asignacion} != null ? $F{rol_asignacion} : "-"]]></textFieldExpression>
+				</textField>
+
+				<textField pattern="#0.0" isBlankWhenNull="true">
+					<reportElement style="DetailRow" x="755" y="0" width="47" height="22" uuid="6c7d8e9f-0a1b-2c3d-4e5f-6a7b8c9d0e1f"/>
+					<box padding="3"><pen lineWidth="0.5" lineColor="#ECF0F1"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{horas_asignadas}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+
+	<!-- Pie de página -->
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="3" width="802" height="1" forecolor="#3498DB" uuid="3d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a"/>
+			</line>
+
+			<textField>
+				<reportElement x="350" y="8" width="100" height="15" forecolor="#7F8C8D" uuid="4e5f6a7b-8c9d-0e1f-2a3b-4c5d6e7f8a9b"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+
+			<textField evaluationTime="Report">
+				<reportElement x="450" y="8" width="50" height="15" forecolor="#7F8C8D" uuid="5f6a7b8c-9d0e-1f2a-3b4c-5d6e7f8a9b0c"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+
+			<staticText>
+				<reportElement x="10" y="8" width="200" height="15" forecolor="#7F8C8D" uuid="6a7b8c9d-0e1f-2a3b-4c5d-6e7f8a9b0c1d"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[TaskFlow - Sistema de Gestión de Tareas]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+
+	<!-- Resumen -->
+	<summary>
+		<band height="80" splitType="Stretch">
+			<!-- Área de resumen -->
+			<rectangle>
+				<reportElement x="0" y="10" width="802" height="60" backcolor="#EBF5FB" uuid="7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"/>
+				<graphicElement><pen lineWidth="0.0"/></graphicElement>
+			</rectangle>
+
+			<!-- Total de registros -->
+			<staticText>
+				<reportElement x="20" y="25" width="150" height="25" forecolor="#2C3E50" uuid="8e9f0a1b-2c3d-4e5f-6a7b-8c9d0e1f2a3b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total de registros:]]></text>
+			</staticText>
+
+			<textField>
+				<reportElement x="170" y="25" width="100" height="25" forecolor="#3498DB" uuid="9f0a1b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+
+			<!-- Total de horas -->
+			<staticText>
+				<reportElement x="320" y="25" width="150" height="25" forecolor="#2C3E50" uuid="0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total horas asignadas:]]></text>
+			</staticText>
+
+			<textField pattern="#0.0">
+				<reportElement x="470" y="25" width="100" height="25" forecolor="#3498DB" uuid="1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TotalHoras} != null ? $V{TotalHoras} : 0]]></textFieldExpression>
+			</textField>
+
+			<!-- Nota informativa -->
+			<staticText>
+				<reportElement x="20" y="50" width="762" height="15" forecolor="#7F8C8D" uuid="2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[* Este informe relaciona datos de tres tablas: TAREAS (información de tareas) → ASIGNACIONES (quién trabaja en qué) → USUARIOS (datos de empleados)]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

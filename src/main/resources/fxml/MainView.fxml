@@ -91,6 +91,35 @@
                         </VBox>
                     </HBox>
 
+                    <!-- Sección 3: Botones de Informes -->
+                    <VBox spacing="10">
+                        <Label text="Informes" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <HBox spacing="15">
+                            <Button fx:id="btnInformeTareasGrafica" text=" Informe de Tareas con Gráfica (Incrustado)"
+                                    onAction="#handleInformeTareasGrafica" styleClass="btn-primary">
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="BAR_CHART" size="14px"/>
+                                </graphic>
+                            </Button>
+
+                            <ComboBox fx:id="comboEstadoFiltro" promptText="Filtrar por estado" prefWidth="150">
+                            </ComboBox>
+
+                            <Button fx:id="btnInformeAsignaciones" text=" Informe de Asignaciones (Ventana Nueva)"
+                                    onAction="#handleInformeAsignaciones" styleClass="btn-assign">
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="FILE_TEXT_ALT" size="14px"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Sección 4: WebView para mostrar informe incrustado -->
+                    <VBox spacing="10" VBox.vgrow="ALWAYS" style="-fx-border-color: #3498DB; -fx-border-width: 2; -fx-border-radius: 5; -fx-padding: 10;">
+                        <Label text="Vista de Informe" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #3498DB;"/>
+                        <javafx.scene.web.WebView fx:id="webViewInforme" VBox.vgrow="ALWAYS" prefHeight="400"/>
+                    </VBox>
+
                 </VBox>
             </Tab>
 
