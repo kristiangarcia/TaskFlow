@@ -21,7 +21,7 @@
 
         <!-- Fila 2: Categoría -->
         <Label text="Categoría *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField fx:id="txtCategoria" promptText="ej: Desarrollo Web, Marketing" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <ComboBox fx:id="comboCategoria" promptText="Seleccionar categoría" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <!-- Fila 3: Prioridad -->
         <Label text="Prioridad *" GridPane.columnIndex="0" GridPane.rowIndex="3" />

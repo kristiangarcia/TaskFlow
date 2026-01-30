@@ -26,7 +26,7 @@ public class ModalNuevaTareaController implements Initializable {
     @FXML private Label lblTitulo;
     @FXML private TextField txtTitulo;
     @FXML private TextArea txtDescripcion;
-    @FXML private TextField txtCategoria;
+    @FXML private ComboBox<String> comboCategoria;
     @FXML private ComboBox<String> comboPrioridad;
     @FXML private ComboBox<String> comboEstado;
     @FXML private DatePicker dateFechaLimite;
@@ -53,7 +53,7 @@ public class ModalNuevaTareaController implements Initializable {
         EventHandler<KeyEvent> keyHandler = this::manejarEventoTeclado;
         txtTitulo.setOnKeyPressed(keyHandler);
         txtDescripcion.setOnKeyPressed(keyHandler);
-        txtCategoria.setOnKeyPressed(keyHandler);
+        comboCategoria.setOnKeyPressed(keyHandler);
         comboPrioridad.setOnKeyPressed(keyHandler);
         comboEstado.setOnKeyPressed(keyHandler);
         dateFechaLimite.setOnKeyPressed(keyHandler);
@@ -85,6 +85,27 @@ public class ModalNuevaTareaController implements Initializable {
     }
 
     private void inicializarCombos() {
+        // Inicializar categorías predefinidas + categorías existentes de la BD
+        comboCategoria.getItems().addAll(
+            "Desarrollo Web",
+            "Desarrollo Móvil",
+            "Diseño UI/UX",
+            "Marketing",
+            "Administración",
+            "Soporte",
+            "QA/Testing",
+            "DevOps",
+            "Documentación",
+            "Otros"
+        );
+        // Añadir categorías existentes de las tareas en BD que no estén en la lista
+        dataManager.getTareas().stream()
+            .map(Tarea::getProyectoCategoria)
+            .filter(cat -> cat != null && !cat.isEmpty())
+            .distinct()
+            .filter(cat -> !comboCategoria.getItems().contains(cat))
+            .forEach(cat -> comboCategoria.getItems().add(cat));
+
         comboPrioridad.getItems().addAll("alta", "media", "baja");
         comboPrioridad.setValue("media");
         comboEstado.getItems().addAll("abierta", "en_progreso", "completada", "retrasada");
@@ -98,7 +119,14 @@ public class ModalNuevaTareaController implements Initializable {
         if (tareaEditar != null) {
             txtTitulo.setText(tareaEditar.getTitulo());
             txtDescripcion.setText(tareaEditar.getDescripcion());
-            txtCategoria.setText(tareaEditar.getProyectoCategoria() != null ? tareaEditar.getProyectoCategoria() : "");
+            // Establecer categoría en el ComboBox (si no existe, se añade)
+            String categoria = tareaEditar.getProyectoCategoria();
+            if (categoria != null && !categoria.isEmpty()) {
+                if (!comboCategoria.getItems().contains(categoria)) {
+                    comboCategoria.getItems().add(categoria);
+                }
+                comboCategoria.setValue(categoria);
+            }
             comboPrioridad.setValue(tareaEditar.getPrioridad().name());
             comboEstado.setValue(tareaEditar.getEstado().name());
             dateFechaLimite.setValue(tareaEditar.getFechaLimite());
@@ -156,7 +184,9 @@ public class ModalNuevaTareaController implements Initializable {
     private Tarea crearTareaDesdeFormulario() {
         String titulo = txtTitulo.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
-        String categoria = txtCategoria.getText().trim();
+        // Obtener categoría del ComboBox (puede ser seleccionada o escrita manualmente)
+        String categoria = comboCategoria.getValue() != null ? comboCategoria.getValue().trim() :
+                          (comboCategoria.getEditor().getText() != null ? comboCategoria.getEditor().getText().trim() : "");
         Prioridad prioridad = Prioridad.valueOf(comboPrioridad.getValue());
         EstadoTarea estado = EstadoTarea.valueOf(comboEstado.getValue());
         LocalDate fechaLimite = dateFechaLimite.getValue();
@@ -174,7 +204,9 @@ public class ModalNuevaTareaController implements Initializable {
     private Tarea actualizarTareaDesdeFormulario() {
         String titulo = txtTitulo.getText().trim();
         String descripcion = txtDescripcion.getText().trim();
-        String categoria = txtCategoria.getText().trim();
+        // Obtener categoría del ComboBox (puede ser seleccionada o escrita manualmente)
+        String categoria = comboCategoria.getValue() != null ? comboCategoria.getValue().trim() :
+                          (comboCategoria.getEditor().getText() != null ? comboCategoria.getEditor().getText().trim() : "");
         Prioridad prioridad = Prioridad.valueOf(comboPrioridad.getValue());
         EstadoTarea estado = EstadoTarea.valueOf(comboEstado.getValue());
         LocalDate fechaLimite = dateFechaLimite.getValue();
@@ -207,7 +239,7 @@ public class ModalNuevaTareaController implements Initializable {
         // Registrar controles para validación visual
         validador.registrarControl("Título", txtTitulo);
         validador.registrarControl("Descripción", txtDescripcion);
-        validador.registrarControl("Categoría", txtCategoria);
+        validador.registrarControl("Categoría", comboCategoria);
         validador.registrarControl("Prioridad", comboPrioridad);
         validador.registrarControl("Estado", comboEstado);
         validador.registrarControl("Fecha límite", dateFechaLimite);
@@ -219,8 +251,10 @@ public class ModalNuevaTareaController implements Initializable {
         // Validar descripción (obligatorio)
         validador.validarNoVacio("Descripción", txtDescripcion.getText(), "Es obligatoria");
 
-        // Validar categoría (obligatorio)
-        validador.validarNoVacio("Categoría", txtCategoria.getText(), "Es obligatoria");
+        // Validar categoría (obligatorio) - obtener del ComboBox o del editor si es editable
+        String categoriaValor = comboCategoria.getValue() != null ? comboCategoria.getValue() :
+                               (comboCategoria.getEditor().getText() != null ? comboCategoria.getEditor().getText() : "");
+        validador.validarNoVacio("Categoría", categoriaValor, "Es obligatoria");
 
         // Validar prioridad (obligatorio)
         validador.validarNoVacio("Prioridad", comboPrioridad.getValue(), "Es obligatoria");
