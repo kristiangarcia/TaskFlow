@@ -23,11 +23,17 @@
                     <graphic>
                         <FontAwesomeIconView glyphName="USER_PLUS" size="14px"/>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Crear nuevo usuario"/>
+                    </tooltip>
                 </Button>
                 <Button fx:id="btnNuevaTarea" text=" Tarea" onAction="#handleNuevaTarea" styleClass="btn-header">
                     <graphic>
                         <FontAwesomeIconView glyphName="PLUS_CIRCLE" size="14px"/>
                     </graphic>
+                    <tooltip>
+                        <Tooltip text="Crear nueva tarea"/>
+                    </tooltip>
                 </Button>
             </HBox>
         </VBox>
@@ -100,6 +106,9 @@
                                 <graphic>
                                     <FontAwesomeIconView glyphName="BAR_CHART" size="14px"/>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="Generar informe de tareas con gráfica"/>
+                                </tooltip>
                             </Button>
 
                             <ComboBox fx:id="comboEstadoFiltro" promptText="Filtrar por estado" prefWidth="150">
@@ -110,6 +119,9 @@
                                 <graphic>
                                     <FontAwesomeIconView glyphName="FILE_TEXT_ALT" size="14px"/>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="Generar informe de asignaciones en ventana nueva"/>
+                                </tooltip>
                             </Button>
                         </HBox>
                     </VBox>
@@ -129,9 +141,21 @@
 
                     <!-- Barra de herramientas HBox -->
                     <HBox spacing="10" style="-fx-alignment: center-left;">
-                        <Button fx:id="btnNuevoUsuarioTab" text="Nuevo Usuario"/>
-                        <Button fx:id="btnExportarUsuarios" text="Exportar CSV"/>
-                        <Button fx:id="btnImportarUsuarios" text="Importar CSV"/>
+                        <Button fx:id="btnNuevoUsuarioTab" text="Nuevo Usuario">
+                            <tooltip>
+                                <Tooltip text="Crear nuevo usuario"/>
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="btnExportarUsuarios" text="Exportar CSV">
+                            <tooltip>
+                                <Tooltip text="Exportar usuarios a archivo CSV"/>
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="btnImportarUsuarios" text="Importar CSV">
+                            <tooltip>
+                                <Tooltip text="Importar usuarios desde archivo CSV"/>
+                            </tooltip>
+                        </Button>
                         <Separator prefHeight="25"/>
                         <TextField fx:id="txtBuscarUsuarios" promptText="Buscar por nombre..." prefWidth="200"/>
                         <ComboBox fx:id="comboFiltroRol" promptText="Filtrar por rol" prefWidth="150"/>
@@ -163,9 +187,21 @@
 
                     <!-- Barra de herramientas HBox -->
                     <HBox spacing="10" style="-fx-alignment: center-left;">
-                        <Button fx:id="btnNuevaTareaTab" text="Nueva Tarea"/>
-                        <Button fx:id="btnExportarTareas" text="Exportar CSV"/>
-                        <Button fx:id="btnImportarTareas" text="Importar CSV"/>
+                        <Button fx:id="btnNuevaTareaTab" text="Nueva Tarea">
+                            <tooltip>
+                                <Tooltip text="Crear nueva tarea"/>
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="btnExportarTareas" text="Exportar CSV">
+                            <tooltip>
+                                <Tooltip text="Exportar tareas a archivo CSV"/>
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="btnImportarTareas" text="Importar CSV">
+                            <tooltip>
+                                <Tooltip text="Importar tareas desde archivo CSV"/>
+                            </tooltip>
+                        </Button>
                         <Separator prefHeight="25"/>
                         <TextField fx:id="txtBuscarTareas" promptText="Buscar por título..." prefWidth="200"/>
                         <ComboBox fx:id="comboEstado" promptText="Estado" prefWidth="150"/>
@@ -260,7 +296,11 @@
                             <Label fx:id="lblPrediccionIA" text="Predicción IA: Esta tarea podría retrasarse. Se recomienda iniciar pronto."
                                    style="-fx-font-size: 11px; -fx-text-fill: white; -fx-background-color: rgba(0,0,0,0.2); -fx-padding: 10; -fx-background-radius: 3;"/>
 
-                            <Button fx:id="btnIniciarFoco" text="Iniciar Timer" style="-fx-font-size: 14px; -fx-pref-height: 40;"/>
+                            <Button fx:id="btnIniciarFoco" text="Iniciar Timer" style="-fx-font-size: 14px; -fx-pref-height: 40;">
+                                <tooltip>
+                                    <Tooltip text="Iniciar temporizador para la tarea actual"/>
+                                </tooltip>
+                            </Button>
                         </VBox>
 
                         <!-- Mis Tareas Pendientes -->

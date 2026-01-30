@@ -55,11 +55,17 @@
             <graphic>
                 <FontAwesomeIconView glyphName="TIMES" size="14px"/>
             </graphic>
+            <tooltip>
+                <Tooltip text="Cancelar y cerrar ventana"/>
+            </tooltip>
         </Button>
         <Button fx:id="btnGuardar" text=" Guardar" onAction="#handleGuardar" style="-fx-text-fill: white; -fx-background-color: #3498DB;">
             <graphic>
                 <FontAwesomeIconView glyphName="SAVE" size="14px"/>
             </graphic>
+            <tooltip>
+                <Tooltip text="Guardar tarea"/>
+            </tooltip>
         </Button>
     </HBox>
 

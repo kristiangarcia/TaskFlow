@@ -38,6 +38,9 @@
         <graphic>
             <FontAwesomeIconView glyphName="PLUS" size="14px"/>
         </graphic>
+        <tooltip>
+            <Tooltip text="Añadir nueva asignación a la tarea"/>
+        </tooltip>
     </Button>
 
     <!-- Título de sección -->
@@ -67,6 +70,9 @@
             <graphic>
                 <FontAwesomeIconView glyphName="TIMES" size="14px"/>
             </graphic>
+            <tooltip>
+                <Tooltip text="Cerrar ventana de asignaciones"/>
+            </tooltip>
         </Button>
     </HBox>
 

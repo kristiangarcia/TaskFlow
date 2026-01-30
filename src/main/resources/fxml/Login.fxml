@@ -44,6 +44,9 @@
             <graphic>
                 <FontAwesomeIconView glyphName="SIGN_IN" size="16px"/>
             </graphic>
+            <tooltip>
+                <Tooltip text="Iniciar sesión en TaskFlow"/>
+            </tooltip>
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
