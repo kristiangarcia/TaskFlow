@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -11,6 +12,7 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -86,6 +88,21 @@ public class ViewManager {
         } catch (IOException e) {
             System.err.println("Error cargando vista FXML: " + fxmlPath);
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Aplica el icono de la aplicación a un Stage
+     */
+    private void aplicarIcono(Stage stage) {
+        try {
+            InputStream iconStream = getClass().getResourceAsStream("/images/icon.png");
+            if (iconStream != null) {
+                Image icon = new Image(iconStream);
+                stage.getIcons().add(icon);
+            }
+        } catch (Exception e) {
+            // Icono no disponible, continuar sin él
         }
     }
 
@@ -169,6 +186,7 @@ public class ViewManager {
             modalStage.setTitle(title);
             modalStage.initModality(Modality.APPLICATION_MODAL);
             modalStage.initOwner(primaryStage);
+            aplicarIcono(modalStage);
 
             Scene scene = new Scene(content, width, height);
             cargarCSS(scene);
@@ -211,6 +229,7 @@ public class ViewManager {
         modalStage.setTitle(title);
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.initOwner(primaryStage);
+        aplicarIcono(modalStage);
 
         Scene scene = new Scene(content, width, height);
         cargarCSS(scene);
