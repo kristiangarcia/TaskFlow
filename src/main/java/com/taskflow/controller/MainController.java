@@ -349,6 +349,35 @@ public class MainController implements Initializable {
         comboEstadoFiltro.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Actualiza el dashboard de administrador (métricas y gráfica)
+     */
+    private void actualizarDashboardAdmin() {
+        // Actualizar métricas
+        ObservableList<Usuario> usuarios = dataManager.getUsuarios();
+        long usuariosActivos = usuarios.stream().filter(Usuario::isActivo).count();
+        long tareasActivas = dataManager.countTareasByEstado(EstadoTarea.abierta) +
+                            dataManager.countTareasByEstado(EstadoTarea.en_progreso);
+        long tareasCompletadas = dataManager.countTareasByEstado(EstadoTarea.completada);
+
+        lblUsuariosActivos.setText(String.valueOf(usuariosActivos));
+        lblTareasActivas.setText(String.valueOf(tareasActivas));
+        lblTareasCompletadas.setText(String.valueOf(tareasCompletadas));
+
+        // Actualizar gráfica
+        chartTareasPorEstado.getData().clear();
+        configurarGraficoBarras();
+
+        // Actualizar tabla de deadlines
+        ObservableList<Tarea> tareas = dataManager.getTareas();
+        ObservableList<Tarea> tareasProximas = tareas.stream()
+            .filter(t -> t.getFechaLimite() != null)
+            .sorted((t1, t2) -> t1.getFechaLimite().compareTo(t2.getFechaLimite()))
+            .limit(10)
+            .collect(Collectors.toCollection(FXCollections::observableArrayList));
+        tableDeadlines.setItems(tareasProximas);
+    }
+
     private void configurarGraficoBarras() {
         // Crear serie de datos
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -662,6 +691,8 @@ public class MainController implements Initializable {
                                 exito.setHeaderText(null);
                                 exito.setContentText("Tarea eliminada correctamente");
                                 exito.showAndWait();
+                                // Actualizar el dashboard con las nuevas métricas y gráfica
+                                actualizarDashboardAdmin();
                             } else {
                                 Alert error = new Alert(Alert.AlertType.ERROR);
                                 error.setTitle("Error");
@@ -878,7 +909,10 @@ public class MainController implements Initializable {
 
     @FXML
     void handleNuevaTarea() {
-        ViewManager.getInstance().openModalFxml("/fxml/ModalNuevaTarea.fxml", "Nueva Tarea", 700, 600);
+        javafx.stage.Stage modal = ViewManager.getInstance().openModalFxml("/fxml/ModalNuevaTarea.fxml", "Nueva Tarea", 700, 600);
+        if (modal != null) {
+            modal.setOnHidden(event -> actualizarDashboardAdmin());
+        }
     }
 
     @FXML
@@ -1032,8 +1066,11 @@ public class MainController implements Initializable {
             ModalNuevaTareaController controller = loader.getController();
             controller.setTareaEditar(tarea);
 
-            // Abrir modal
-            ViewManager.getInstance().openModal("Editar Tarea", content, 700, 600);
+            // Abrir modal y actualizar dashboard al cerrar
+            javafx.stage.Stage modal = ViewManager.getInstance().openModal("Editar Tarea", content, 700, 600);
+            if (modal != null) {
+                modal.setOnHidden(event -> actualizarDashboardAdmin());
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
