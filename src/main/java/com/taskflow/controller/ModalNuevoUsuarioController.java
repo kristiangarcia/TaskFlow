@@ -9,12 +9,18 @@ import com.taskflow.util.ValidadorFormulario;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.application.Platform;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class ModalNuevoUsuarioController implements Initializable {
@@ -27,10 +33,13 @@ public class ModalNuevoUsuarioController implements Initializable {
     @FXML private PasswordField txtPassword;
     @FXML private CheckBox checkActivo;
     @FXML private Button btnCancelar;
+    @FXML private Button btnSeleccionarFoto;
+    @FXML private ImageView imgPreview;
     @FXML private Label lblPasswordLabel;
 
     private DataManager dataManager;
     private Usuario usuarioEditar; // null si es nuevo, contiene el usuario si es edición
+    private byte[] fotoSeleccionada; // Almacena la foto seleccionada
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -100,6 +109,17 @@ public class ModalNuevoUsuarioController implements Initializable {
             comboRol.setValue(usuarioEditar.getRol().name());
             checkActivo.setSelected(usuarioEditar.isActivo());
             // No cargamos la contraseña por seguridad
+
+            // Cargar foto de perfil si existe
+            if (usuarioEditar.getFotoPerfil() != null && usuarioEditar.getFotoPerfil().length > 0) {
+                try {
+                    Image imagen = new Image(new ByteArrayInputStream(usuarioEditar.getFotoPerfil()));
+                    imgPreview.setImage(imagen);
+                    btnSeleccionarFoto.setText("Cambiar foto...");
+                } catch (Exception e) {
+                    // Error al cargar imagen, no hacer nada
+                }
+            }
         }
     }
 
@@ -154,6 +174,12 @@ public class ModalNuevoUsuarioController implements Initializable {
 
         Usuario usuario = new Usuario(0, nombre, email, telefono, rol, activo);
         usuario.setContraseñaHash(passwordHash);
+
+        // Añadir foto si se seleccionó una
+        if (fotoSeleccionada != null) {
+            usuario.setFotoPerfil(fotoSeleccionada);
+        }
+
         return usuario;
     }
 
@@ -178,6 +204,13 @@ public class ModalNuevoUsuarioController implements Initializable {
         } else {
             // Mantener la contraseña existente
             usuario.setContraseñaHash(usuarioEditar.getContraseñaHash());
+        }
+
+        // Usar nueva foto si se seleccionó, si no mantener la existente
+        if (fotoSeleccionada != null) {
+            usuario.setFotoPerfil(fotoSeleccionada);
+        } else if (usuarioEditar.getFotoPerfil() != null) {
+            usuario.setFotoPerfil(usuarioEditar.getFotoPerfil());
         }
 
         return usuario;
@@ -212,6 +245,36 @@ public class ModalNuevoUsuarioController implements Initializable {
 
         // Retornar validador
         return validador;
+    }
+
+    @FXML
+    void handleSeleccionarFoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar foto de perfil");
+        fileChooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif"),
+            new FileChooser.ExtensionFilter("PNG", "*.png"),
+            new FileChooser.ExtensionFilter("JPEG", "*.jpg", "*.jpeg")
+        );
+
+        File file = fileChooser.showOpenDialog(btnSeleccionarFoto.getScene().getWindow());
+        if (file != null) {
+            try {
+                // Leer el archivo como bytes
+                FileInputStream fis = new FileInputStream(file);
+                fotoSeleccionada = fis.readAllBytes();
+                fis.close();
+
+                // Mostrar vista previa
+                Image imagen = new Image(new ByteArrayInputStream(fotoSeleccionada));
+                imgPreview.setImage(imagen);
+
+                // Actualizar texto del botón
+                btnSeleccionarFoto.setText("Cambiar foto...");
+            } catch (Exception e) {
+                AlertHelper.mostrarError("Error", "No se pudo cargar la imagen: " + e.getMessage());
+            }
+        }
     }
 
     @FXML
