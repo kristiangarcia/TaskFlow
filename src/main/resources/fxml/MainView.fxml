@@ -36,6 +36,14 @@
                     </tooltip>
                 </Button>
                 <Separator prefHeight="25" orientation="VERTICAL"/>
+                <Button fx:id="btnAyuda" text=" Ayuda" onAction="#handleAyuda" styleClass="btn-header">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="QUESTION_CIRCLE" size="14px"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Ver guía de uso de la aplicación"/>
+                    </tooltip>
+                </Button>
                 <Button fx:id="btnCerrarSesion" text=" Cerrar Sesión" onAction="#handleCerrarSesion" styleClass="btn-header" style="-fx-background-color: #e74c3c; -fx-text-fill: white;">
                     <graphic>
                         <FontAwesomeIconView glyphName="SIGN_OUT" size="14px"/>

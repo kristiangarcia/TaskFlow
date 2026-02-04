@@ -57,6 +57,9 @@ public class MainController implements Initializable {
     private Button btnNuevaTarea;
 
     @FXML
+    private Button btnAyuda;
+
+    @FXML
     private Button btnCerrarSesion;
 
     @FXML
@@ -916,6 +919,45 @@ public class MainController implements Initializable {
         if (modal != null) {
             modal.setOnHidden(event -> actualizarDashboardAdmin());
         }
+    }
+
+    @FXML
+    void handleAyuda() {
+        String contenidoAyuda = "═══════════════════════════════════════════════════\n" +
+                               "            GUÍA RÁPIDA DE TASKFLOW\n" +
+                               "═══════════════════════════════════════════════════\n\n" +
+                               "📋 GESTIÓN DE TAREAS\n" +
+                               "  • Crear tarea: Click en botón 'Tarea' o pestaña Gestión Tareas\n" +
+                               "  • Editar: Click en icono lápiz en la tabla\n" +
+                               "  • Eliminar: Click en icono papelera (con confirmación)\n" +
+                               "  • Filtrar: Usa los campos de búsqueda y ComboBox\n\n" +
+                               "👥 GESTIÓN DE USUARIOS\n" +
+                               "  • Crear usuario: Click en botón 'Usuario' o pestaña Gestión Usuarios\n" +
+                               "  • Roles: Admin (gestión completa) / Empleado (solo sus tareas)\n" +
+                               "  • Foto de perfil: Click en 'Seleccionar foto' (PNG, JPG, GIF)\n\n" +
+                               "📊 DASHBOARD\n" +
+                               "  • Métricas: Se actualizan automáticamente al modificar datos\n" +
+                               "  • Gráficas: Colores por estado (Azul=Progreso, Verde=Completadas)\n" +
+                               "  • Informes: Genera PDF con gráficas y datos actuales\n\n" +
+                               "💾 IMPORTAR/EXPORTAR\n" +
+                               "  • CSV: Botones en cada pestaña de gestión\n" +
+                               "  • Exporta solo registros filtrados visibles\n\n" +
+                               "⌨️ ATAJOS DE TECLADO\n" +
+                               "  • Enter: Guardar en formularios\n" +
+                               "  • Escape: Cancelar/Cerrar modales\n\n" +
+                               "❓ MÁS AYUDA\n" +
+                               "  • Tooltips: Pasa el cursor sobre cualquier botón\n" +
+                               "  • Validaciones: Los campos con * son obligatorios\n\n" +
+                               "═══════════════════════════════════════════════════\n" +
+                               "            TaskFlow v1.0 - 2026\n" +
+                               "═══════════════════════════════════════════════════";
+
+        Alert ayuda = new Alert(Alert.AlertType.INFORMATION);
+        ayuda.setTitle("Ayuda - TaskFlow");
+        ayuda.setHeaderText("Guía de Uso de la Aplicación");
+        ayuda.setContentText(contenidoAyuda);
+        ayuda.getDialogPane().setPrefWidth(600);
+        ayuda.showAndWait();
     }
 
     @FXML
