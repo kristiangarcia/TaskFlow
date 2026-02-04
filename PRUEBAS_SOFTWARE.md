@@ -804,9 +804,10 @@ d37647b - Mejorar intuitibilidad del DatePicker con icono y prompt
 ### 7.3. Datos de Prueba Utilizados
 
 **Usuarios:**
-- admin@taskflow.com / Admin123! (Administrador)
-- empleado@taskflow.com / Empleado123! (Empleado)
-- maria@test.com / Test123! (Test ALFA)
+- admin@taskflow.com (Administrador)
+- kristian@taskflow.com (Empleado)
+
+*Nota: Las contraseñas se proporcionan en el comentario privado de entrega de Moodle por seguridad.*
 
 **Tareas de ejemplo:**
 - "Revisar informe mensual" - Administración - Alta - 60 mins
