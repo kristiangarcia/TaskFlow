@@ -944,8 +944,14 @@ public class MainController implements Initializable {
 
         File file = fileChooser.showSaveDialog(btnExportarUsuarios.getScene().getWindow());
         if (file != null) {
-            if (ExportManager.exportarUsuariosCSV(tableUsuarios.getItems(), file.getAbsolutePath())) {
-                AlertHelper.mostrarExito("Exportación exitosa", "Usuarios exportados a: " + file.getName());
+            // Exportar solo los usuarios visibles (filtrados)
+            ObservableList<Usuario> usuariosAExportar = tableUsuarios.getItems();
+            int totalUsuarios = dataManager.getUsuarios().size();
+
+            if (ExportManager.exportarUsuariosCSV(usuariosAExportar, file.getAbsolutePath())) {
+                String mensaje = String.format("Exportados %d de %d usuarios a: %s",
+                    usuariosAExportar.size(), totalUsuarios, file.getName());
+                AlertHelper.mostrarExito("Exportación exitosa", mensaje);
             } else {
                 AlertHelper.mostrarError("Error", "No se pudieron exportar los usuarios");
             }
@@ -961,8 +967,14 @@ public class MainController implements Initializable {
 
         File file = fileChooser.showSaveDialog(btnExportarTareas.getScene().getWindow());
         if (file != null) {
-            if (ExportManager.exportarTareasCSV(tableTareas.getItems(), file.getAbsolutePath())) {
-                AlertHelper.mostrarExito("Exportación exitosa", "Tareas exportadas a: " + file.getName());
+            // Exportar solo las tareas visibles (filtradas)
+            ObservableList<Tarea> tareasAExportar = tableTareas.getItems();
+            int totalTareas = dataManager.getTareas().size();
+
+            if (ExportManager.exportarTareasCSV(tareasAExportar, file.getAbsolutePath())) {
+                String mensaje = String.format("Exportadas %d de %d tareas a: %s",
+                    tareasAExportar.size(), totalTareas, file.getName());
+                AlertHelper.mostrarExito("Exportación exitosa", mensaje);
             } else {
                 AlertHelper.mostrarError("Error", "No se pudieron exportar las tareas");
             }
