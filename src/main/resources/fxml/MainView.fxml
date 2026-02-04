@@ -35,6 +35,15 @@
                         <Tooltip text="Crear nueva tarea"/>
                     </tooltip>
                 </Button>
+                <Separator prefHeight="25" orientation="VERTICAL"/>
+                <Button fx:id="btnCerrarSesion" text=" Cerrar Sesión" onAction="#handleCerrarSesion" styleClass="btn-header" style="-fx-background-color: #e74c3c; -fx-text-fill: white;">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="SIGN_OUT" size="14px"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Cerrar sesión y volver al login"/>
+                    </tooltip>
+                </Button>
             </HBox>
         </VBox>
     </top>

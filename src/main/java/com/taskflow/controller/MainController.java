@@ -57,6 +57,9 @@ public class MainController implements Initializable {
     private Button btnNuevaTarea;
 
     @FXML
+    private Button btnCerrarSesion;
+
+    @FXML
     private Button btnAsignaciones;
 
     @FXML
@@ -912,6 +915,23 @@ public class MainController implements Initializable {
         javafx.stage.Stage modal = ViewManager.getInstance().openModalFxml("/fxml/ModalNuevaTarea.fxml", "Nueva Tarea", 700, 600);
         if (modal != null) {
             modal.setOnHidden(event -> actualizarDashboardAdmin());
+        }
+    }
+
+    @FXML
+    void handleCerrarSesion() {
+        try {
+            // Cerrar sesión en AuthService
+            AuthService.getInstance().cerrarSesion();
+
+            // Cerrar ventana actual
+            javafx.stage.Stage currentStage = (javafx.stage.Stage) btnCerrarSesion.getScene().getWindow();
+            currentStage.close();
+
+            // Abrir ventana de Login
+            ViewManager.getInstance().cambiarVista("/fxml/Login.fxml", "TaskFlow - Login", 400, 500);
+        } catch (Exception e) {
+            AlertHelper.mostrarError("Error", "No se pudo cerrar la sesión: " + e.getMessage());
         }
     }
 
