@@ -33,7 +33,10 @@
 
         <!-- Fila 5: Fecha límite -->
         <Label text="Fecha límite *" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <DatePicker fx:id="dateFechaLimite" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <DatePicker fx:id="dateFechaLimite" promptText="Selecciona fecha" prefWidth="200"/>
+            <FontAwesomeIconView glyphName="CALENDAR" size="18" style="-fx-fill: #95a5a6;"/>
+        </HBox>
 
         <!-- Fila 6: Tiempo estimado -->
         <Label text="Tiempo estimado (min) *" GridPane.columnIndex="0" GridPane.rowIndex="6" />
